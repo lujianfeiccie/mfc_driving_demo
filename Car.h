@@ -5,10 +5,17 @@
 class Car : public IControl
 {
 public:
-	Car(int x,int y,double ratio);
+	Car();
 	~Car(void);
 
-	void setParams(double m_fLength, //长度(mm) 4415  
+	void setParams(
+	double x,
+
+	double y,
+
+	double ratio,
+		
+	double m_fLength, //长度(mm) 4415  
 
     double m_fWidth,  //宽度(mm) 1674  
 
@@ -22,6 +29,7 @@ public:
 
     double m_fWheel_diameter //轮胎直径 
 	);
+
 	double m_fLength; //长度(mm) 4415  
 
     double m_fWidth;  //宽度(mm) 1674  
@@ -53,9 +61,15 @@ public:
 	ThreeDPoint* pt3d_rear; //后车盖
 	CPoint* pt_rear;
 
-	Wheel* m_wheel;
+	Wheel* m_wheel_front_left; //前轮
+	Wheel* m_wheel_front_right;
+
+	Wheel* m_wheel_rear_left;//后轮
+	Wheel* m_wheel_rear_right;
 
 	void Translate(double x,double y,double z);
+	void turn_left();
+	void turn_right();
 	void Scale(double ratio);	
 	void draw(CPaintDC &dc);
 };

@@ -5,7 +5,7 @@ class Wheel :
 	public IControl
 {
 public:
-	Wheel(int x,int y,double car_cx,double car_cy,double ratio);
+	Wheel();
 	void setParams(int x,int y,double car_cx,double car_cy,double ratio,double m_fWheel_diameter);
 	~Wheel(void);
 

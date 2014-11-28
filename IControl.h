@@ -5,8 +5,6 @@ public:
 	IControl(void);
 	~IControl(void);
 
-protected:
-
  double m_dRatio;
 
  double m_dX;

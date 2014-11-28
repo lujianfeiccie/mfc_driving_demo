@@ -29,7 +29,7 @@ void MathUtil::MultipleMarix(double pt[1][4],double matrix[4][4],double result[1
  }
  void MathUtil::Translate(ThreeDPoint pt[],int size,double x,double y,double z)
  {
-	double temp[4][4];
+	double (*temp)[4] = new double[size][4];
 	double result[1][4];
 	double moveMarix[4][4] = 
 	{
@@ -45,6 +45,7 @@ void MathUtil::MultipleMarix(double pt[1][4],double matrix[4][4],double result[1
 	   MultipleMarix(temp+i,moveMarix,result);
 	   MarixToPoint( result,pt[i]);
 	 }
+	 delete []temp;
  }
 
   void MathUtil::RotateX(ThreeDPoint pt[],int size,double degree)

@@ -16,7 +16,29 @@
 CChildView::CChildView()
 {
 	
-	m_car = new Car(163.000000 , 360.000000,0.150614);
+	m_car = new Car();
+	m_car->setParams(
+			 163.000000 ,  //x
+
+			 360.000000,   //y
+
+			 0.100614,     //ratio
+
+			 4415, //长度(mm) 4415  
+
+			  1674,  //宽度(mm) 1674  
+
+              1415, //高度(mm) 1415  
+
+			   2471, //轴距(mm) 2471  
+
+				1429, //前轮距(mm) 1429 
+
+				1422,  //后轮距(mm) 1422  
+
+				381 //轮胎直径(mm) 381  R15 inch 
+				);
+	//163.000000 , 360.000000,0.150614
 	//m_car = new Car(124.000000 , 295.000000 , 1);
 	//原先900,2500
 }
@@ -99,16 +121,16 @@ if (pMsg->message==WM_KEYDOWN)
 		case VK_LEFT: 
 		{
 			//Util::LOG(L"left");
-			//m_car->m_wheel->turn_left();
-			m_car->Scale(0.999);
+			m_car->turn_left();
+			//m_car->Scale(0.999);
 			Invalidate();
 		}
 		break;
 		case VK_RIGHT: 
 		{
 			//Util::LOG(L"right");
-			//m_car->m_wheel->turn_right();
-			m_car->Scale(1.001);
+			m_car->turn_right();
+			//m_car->Scale(1.001);
 			Invalidate();
 		}
 		break;
