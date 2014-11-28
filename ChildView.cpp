@@ -16,8 +16,9 @@
 CChildView::CChildView()
 {
 	
-	m_car = new Car(124.000000 , 295.000000 , 0.113317);
-
+	m_car = new Car(163.000000 , 360.000000,0.150614);
+	//m_car = new Car(124.000000 , 295.000000 , 1);
+	//т╜ох900,2500
 }
 
 CChildView::~CChildView()
@@ -87,11 +88,19 @@ if (pMsg->message==WM_KEYDOWN)
 			Invalidate();
 		}
 		break;
+		case 'D': 
+		{
+			Util::LOG(L"moveright");
+			//m_wheel->go_backward();
+			m_car->Translate(1,0,0);
+			Invalidate();
+		}
+		break;
 		case VK_LEFT: 
 		{
 			//Util::LOG(L"left");
 			//m_car->m_wheel->turn_left();
-			m_car->Scale(0.9);
+			m_car->Scale(0.999);
 			Invalidate();
 		}
 		break;
@@ -99,7 +108,7 @@ if (pMsg->message==WM_KEYDOWN)
 		{
 			//Util::LOG(L"right");
 			//m_car->m_wheel->turn_right();
-			m_car->Scale(1.1);
+			m_car->Scale(1.001);
 			Invalidate();
 		}
 		break;
