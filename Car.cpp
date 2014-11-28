@@ -5,7 +5,7 @@
 Car::Car(int x,int y,double ratio)
 {
 
-	m_wheel = new Wheel(100,100);
+	m_wheel = new Wheel(x,y,ratio);
 
 	m_dRatio = ratio;
 

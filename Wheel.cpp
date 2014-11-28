@@ -2,14 +2,14 @@
 #include "Wheel.h"
 #include "Util.h"
 #define SIZE_OF_POINT 2
-Wheel::Wheel(int x,int y)
+Wheel::Wheel(int x,int y, double ratio)
 {
 	degree = 0;
-
+	m_dRatio = ratio;
 	pt = new CPoint[SIZE_OF_POINT];
 	pt3d = new ThreeDPoint[SIZE_OF_POINT];
 
-	setParams(x,y,100);
+	//setParams(x,y,100);
 }
 void Wheel::setParams(int x,int y,double m_fWheel_diameter)
 {
@@ -22,6 +22,8 @@ void Wheel::setParams(int x,int y,double m_fWheel_diameter)
 	(pt3d+0)->x = x;(pt3d+0)->y = y-m_fWheel_diameter/2.0;
 
 	(pt3d+1)->x = x;(pt3d+1)->y = y+m_fWheel_diameter/2.0;
+
+	Scale(m_dRatio);
 }
 Wheel::~Wheel(void)
 {
@@ -65,7 +67,9 @@ void Wheel::Translate(double x,double y,double z)
 }
 void Wheel::Scale(double ratio)
 {
+	MathUtil::Translate(pt3d,SIZE_OF_POINT,-m_dX,-m_dY,0);
 	MathUtil::Scale(pt3d,SIZE_OF_POINT,ratio);
+	MathUtil::Translate(pt3d,SIZE_OF_POINT, m_dX, m_dY,0);
 }
  void Wheel::draw(CPaintDC &dc)
  {
