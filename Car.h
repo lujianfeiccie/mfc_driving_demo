@@ -56,7 +56,7 @@ public:
 	Wheel* m_wheel;
 
 	void Translate(double x,double y,double z);
-	void Scale(double ratio);
+	void Scale(double ratio);	
 	void draw(CPaintDC &dc);
 };
 

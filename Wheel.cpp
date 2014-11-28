@@ -2,7 +2,7 @@
 #include "Wheel.h"
 #include "Util.h"
 #define SIZE_OF_POINT 2
-Wheel::Wheel(int x,int y, double ratio)
+Wheel::Wheel(int x,int y,double car_cx,double car_cy,double ratio)
 {
 	degree = 0;
 	m_dRatio = ratio;
@@ -11,19 +11,23 @@ Wheel::Wheel(int x,int y, double ratio)
 
 	//setParams(x,y,100);
 }
-void Wheel::setParams(int x,int y,double m_fWheel_diameter)
+void Wheel::setParams(int x,int y,double car_cx,double car_cy,double ratio,double m_fWheel_diameter)
 {
 	this->m_dX = x;
 	this->m_dY = y;
 	this->m_fWheel_diameter = m_fWheel_diameter;
-
+	this->m_car_cx = car_cx;
+	this->m_car_cy = car_cy;
+	this->m_dRatio = ratio;
 	for(int i=0;i<SIZE_OF_POINT;i++) (pt3d+i)->z = 0;
 
 	(pt3d+0)->x = x;(pt3d+0)->y = y-m_fWheel_diameter/2.0;
 
 	(pt3d+1)->x = x;(pt3d+1)->y = y+m_fWheel_diameter/2.0;
 
-	Scale(m_dRatio);
+	this->m_car_cx = car_cx;
+	this->m_car_cy = car_cy;
+	ScaleCar(m_dRatio);
 }
 Wheel::~Wheel(void)
 {
@@ -70,6 +74,12 @@ void Wheel::Scale(double ratio)
 	MathUtil::Translate(pt3d,SIZE_OF_POINT,-m_dX,-m_dY,0);
 	MathUtil::Scale(pt3d,SIZE_OF_POINT,ratio);
 	MathUtil::Translate(pt3d,SIZE_OF_POINT, m_dX, m_dY,0);
+}
+void Wheel::ScaleCar(double ratio)
+{
+	MathUtil::Translate(pt3d,SIZE_OF_POINT,-m_car_cx,-m_car_cy,0);
+	MathUtil::Scale(pt3d,SIZE_OF_POINT,ratio);
+	MathUtil::Translate(pt3d,SIZE_OF_POINT, m_car_cx, m_car_cy,0);
 }
  void Wheel::draw(CPaintDC &dc)
  {

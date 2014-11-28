@@ -5,8 +5,8 @@ class Wheel :
 	public IControl
 {
 public:
-	Wheel(int x,int y,double ratio);
-	void setParams(int x,int y,double m_fWheel_diameter);
+	Wheel(int x,int y,double car_cx,double car_cy,double ratio);
+	void setParams(int x,int y,double car_cx,double car_cy,double ratio,double m_fWheel_diameter);
 	~Wheel(void);
 
   //Interface
@@ -25,9 +25,12 @@ public:
 
 	void Translate(double x,double y,double z);
 	void Scale(double ratio);
+	void ScaleCar(double ratio);
 	CPoint* pt;
 	ThreeDPoint* pt3d;
 	int degree;
 	double m_fWheel_diameter;
+	double m_car_cx;
+	double m_car_cy;
 };
 

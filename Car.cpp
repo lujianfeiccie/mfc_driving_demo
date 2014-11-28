@@ -5,7 +5,7 @@
 Car::Car(int x,int y,double ratio)
 {
 
-	m_wheel = new Wheel(x,y,ratio);
+	m_wheel = new Wheel(x,y,0,0,ratio);
 
 	m_dRatio = ratio;
 
@@ -80,8 +80,6 @@ void Car::setParams(double m_fLength, //长度(mm) 4415
 
 	(pt3d_front+3)->x = m_dX + m_fWidth / 2.0;(pt3d_front+3)->y =m_dY - m_fWheelbase / 2.0 - m_fWheel_diameter / 2.0 - m_fWheel_diameter / 5.0;
 	
-	//scale wheel
-	m_wheel->setParams( m_dX - m_fWidth / 2.0 ,m_dY - m_fWheelbase / 2.0, m_fWheel_diameter);
 
 /*	m_wheel->Translate(-m_dX,-m_dY,0);
 	m_wheel->Scale(m_dRatio);
@@ -94,6 +92,10 @@ void Car::setParams(double m_fLength, //长度(mm) 4415
 	m_dX = temp_pt[0].x ; m_dY = temp_pt[0].y ;*/
 
 	Scale(m_dRatio);
+
+		//scale wheel
+	m_wheel->setParams( m_dX - m_fWidth / 2.0 ,m_dY - m_fWheelbase / 2.0, m_dX, m_dY,m_dRatio, m_fWheel_diameter);
+
 }
 
 
@@ -123,6 +125,7 @@ void Car::Scale(double ratio)
 	m_dRatio *= ratio;
 	Util::LOG(L"after (%lf , %lf) ratio = %lf",pt3d_front->x,pt3d_front->y,m_dRatio);
 }
+
 void Car::draw(CPaintDC &dc)
 {
 	for(int i=0;i<4;i++)
