@@ -4,7 +4,7 @@
 #include "Util.h"
 Car::Car()
 {
-	
+	m_degree = 0;
 	m_wheel_front_left = new Wheel();
 	m_wheel_front_right = new Wheel();
 	m_wheel_rear_left = new Wheel();
@@ -153,47 +153,137 @@ void Car::turn_left()
 {
 	m_wheel_front_left->turn_left();
 	m_wheel_front_right->turn_left();
+	double a = 90.0 - (double)m_wheel_front_right->m_degree - m_degree;
+	m_radius = tan(a * PI / 180) * m_fWheelbase;
+	m_radius*=m_dRatio;
+	Util::LOG(L"turn left degree=%lf m_radius=%lf",m_wheel_front_right->m_degree,m_radius);
 }
 void Car::turn_right()
 {
 	m_wheel_front_left->turn_right();
 	m_wheel_front_right->turn_right();
+
+	double a = 90.0 - (double)m_wheel_front_right->m_degree - m_degree;
+	m_radius = tan(a * PI / 180) * m_fWheelbase;
+	
+	m_radius*=m_dRatio;
+
+	//计算旋转中心
+	m_rotate_center.x = (pt3d_rear_wheel+1)->x + cos(m_degree * PI / 180) * m_radius;
+	m_rotate_center.y = (pt3d_rear_wheel+1)->y + sin(m_degree * PI / 180) * m_radius;
+
+	Util::LOG(L"wheel degree=%lf car degree=%lf m_radius=%lf center(%lf,%lf)",m_wheel_front_right->m_degree,m_degree,m_radius,m_rotate_center.x,m_rotate_center.y);
 }
 void Car::Scale(double ratio)
 {
-	//Scale car
-	Util::LOG(L"before (%lf , %lf) ratio = %lf",pt3d_front->x,pt3d_front->y,m_dRatio);
-	MathUtil::Translate(pt3d_front,4,-m_dX,-m_dY,0);
+	Scale(ratio,m_dX,m_dY,0);
+}
+void Car::Scale(double ratio,double x,double y,double z)
+{
+	//前车盖
+	MathUtil::Translate(pt3d_front,4,-x,-y,z);
 	MathUtil::Scale(pt3d_front,4,ratio);
-	MathUtil::Translate(pt3d_front,4,m_dX,m_dY,0);
+	MathUtil::Translate(pt3d_front,4,x,y,z);
 
 
 	//前轮轴
-	MathUtil::Translate(pt3d_front_wheel,2,-m_dX,-m_dY,0);
+	MathUtil::Translate(pt3d_front_wheel,2,-x,-y,z);
 	MathUtil::Scale(pt3d_front_wheel,2,ratio);
-	MathUtil::Translate(pt3d_front_wheel,2,m_dX,m_dY,0);
+	MathUtil::Translate(pt3d_front_wheel,2,x,y,z);
 
 
 	//车身+中轴
-	MathUtil::Translate(pt3d_mid,6,-m_dX,-m_dY,0);
+	MathUtil::Translate(pt3d_mid,6,-x,-y,z);
 	MathUtil::Scale(pt3d_mid,6,ratio);
-	MathUtil::Translate(pt3d_mid,6,m_dX,m_dY,0);
+	MathUtil::Translate(pt3d_mid,6,x,y,z);
 
 
 	//后轮轴
-	MathUtil::Translate(pt3d_rear_wheel,2,-m_dX,-m_dY,0);
+	MathUtil::Translate(pt3d_rear_wheel,2,-x,-y,z);
 	MathUtil::Scale(pt3d_rear_wheel,2,ratio);
-	MathUtil::Translate(pt3d_rear_wheel,2,m_dX,m_dY,0);
+	MathUtil::Translate(pt3d_rear_wheel,2,x,y,z);
 
 	//后车盖
-	MathUtil::Translate(pt3d_rear,4,-m_dX,-m_dY,0);
+	MathUtil::Translate(pt3d_rear,4,-x,-y,z);
 	MathUtil::Scale(pt3d_rear,4,ratio);
-	MathUtil::Translate(pt3d_rear,4,m_dX,m_dY,0);
+	MathUtil::Translate(pt3d_rear,4,x,y,z);
 
 	m_dRatio *= ratio;
-	Util::LOG(L"after (%lf , %lf) ratio = %lf",pt3d_front->x,pt3d_front->y,m_dRatio);
 }
 
+void Car::Rotate(double degree)
+{
+	Rotate(degree,m_dX,m_dY,0);
+}
+void Car::Rotate(double degree,double x,double y,double z)
+{
+	//前车盖
+	MathUtil::Translate(pt3d_front,4,-x,-y,z);
+	MathUtil::RotateZ(pt3d_front,4,degree);
+	MathUtil::Translate(pt3d_front,4,x,y,z);
+
+
+	//前轮轴
+	MathUtil::Translate(pt3d_front_wheel,2,-x,-y,z);
+	MathUtil::RotateZ(pt3d_front_wheel,2,degree);
+	MathUtil::Translate(pt3d_front_wheel,2,x,y,z);
+
+
+	//车身+中轴
+	MathUtil::Translate(pt3d_mid,6,-x,-y,z);
+	MathUtil::RotateZ(pt3d_mid,6,degree);
+	MathUtil::Translate(pt3d_mid,6,x,y,z);
+
+
+	//后轮轴
+	MathUtil::Translate(pt3d_rear_wheel,2,-x,-y,z);
+	MathUtil::RotateZ(pt3d_rear_wheel,2,degree);
+	MathUtil::Translate(pt3d_rear_wheel,2,x,y,z);
+
+	//后车盖
+	MathUtil::Translate(pt3d_rear,4,-x,-y,z);
+	MathUtil::RotateZ(pt3d_rear,4,degree);
+	MathUtil::Translate(pt3d_rear,4,x,y,z);
+
+	//轮胎
+	m_wheel_front_left->Rotate(degree,x,y,z);
+	m_wheel_front_right->Rotate(degree,x,y,z);
+	m_wheel_rear_left->Rotate(degree,x,y,z);
+	m_wheel_rear_right->Rotate(degree,x,y,z);
+
+	m_degree +=degree;
+}
+void Car::go_forward()
+{
+	Util::LOG(L"front=%lf car=%lf",m_wheel_front_left->m_degree,m_degree);
+	if(m_wheel_front_left->m_degree - m_degree ==0 )
+	{
+		Translate(sin(m_wheel_front_left->m_degree * PI / 180.0),
+			      -cos(m_wheel_front_left->m_degree * PI / 180.0),
+				  0);
+	 
+	}
+	else
+	{
+		Rotate(1,m_rotate_center.x,m_rotate_center.y,0);
+
+	}
+}
+void Car::go_backward()
+{
+	if(m_wheel_front_left->m_degree - m_degree ==0 )
+	{
+		Translate(sin(m_wheel_front_left->m_degree * PI / 180.0),
+			      cos(m_wheel_front_left->m_degree * PI / 180.0),
+				  0);
+	 //Rotate(1,
+	}
+	else
+	{
+		Rotate(-1,m_rotate_center.x,m_rotate_center.y,0);
+
+	}
+}
 void Car::draw(CPaintDC &dc)
 {
 	//绘制前车盖

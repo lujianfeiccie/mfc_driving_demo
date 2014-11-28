@@ -90,7 +90,7 @@ if (pMsg->message==WM_KEYDOWN)
 		{
 			Util::LOG(L"forward");
 			//m_wheel->go_foward();
-			m_car->Translate(0,-1,0);
+			m_car->go_forward();
 			Invalidate();
 		}
 		break;
@@ -98,7 +98,7 @@ if (pMsg->message==WM_KEYDOWN)
 		{
 			Util::LOG(L"backward");
 			//m_wheel->go_backward();
-			m_car->Translate(0,1,0);
+			m_car->go_backward();
 			Invalidate();
 		}
 		break;

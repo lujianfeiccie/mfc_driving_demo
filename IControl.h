@@ -11,6 +11,7 @@ public:
 
  double m_dY;
 
+ double m_degree;
 public:
 
 

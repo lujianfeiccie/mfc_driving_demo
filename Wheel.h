@@ -26,9 +26,10 @@ public:
 	void Translate(double x,double y,double z);
 	void Scale(double ratio);
 	void ScaleCar(double ratio);
+	void Rotate(double degree);
+	void Rotate(double degree,double x,double y,double z);
 	CPoint* pt;
 	ThreeDPoint* pt3d;
-	int degree;
 	double m_fWheel_diameter;
 	double m_car_cx;
 	double m_car_cy;

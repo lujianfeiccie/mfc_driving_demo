@@ -67,10 +67,17 @@ public:
 	Wheel* m_wheel_rear_left;//后轮
 	Wheel* m_wheel_rear_right;
 
+	double m_radius; //转弯半径
+	ThreeDPoint m_rotate_center; //转弯参照圆心
 	void Translate(double x,double y,double z);
 	void turn_left();
 	void turn_right();
-	void Scale(double ratio);	
+	void Scale(double ratio);
+	void Scale(double ratio,double x,double y,double z);
+	void Rotate(double degree);
+	void Rotate(double degree,double x,double y,double z);
+	void go_forward();
+	void go_backward();
 	void draw(CPaintDC &dc);
 };
 

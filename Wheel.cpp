@@ -17,7 +17,7 @@ void Wheel::setParams(int x,int y,double car_cx,double car_cy,double ratio,doubl
 	this->m_car_cx = car_cx;
 	this->m_car_cy = car_cy;
 	this->m_dRatio = ratio;
-	this->degree = 0;
+	this->m_degree = 0;
 	for(int i=0;i<SIZE_OF_POINT;i++) (pt3d+i)->z = 0;
 
 	(pt3d+0)->x = x;(pt3d+0)->y = y-m_fWheel_diameter/2.0;
@@ -29,11 +29,7 @@ void Wheel::setParams(int x,int y,double car_cx,double car_cy,double ratio,doubl
 	this->m_car_cx = car_cx;
 	this->m_car_cy = car_cy;	
 }
-Wheel::~Wheel(void)
-{
-	delete []pt;
-	delete []pt3d;
-}
+
 
 void Wheel::go_foward()
 {
@@ -48,23 +44,11 @@ void Wheel::go_backward()
 }
 void Wheel::turn_left()
 {
-	MathUtil::Translate(pt3d,SIZE_OF_POINT,-m_dX,-m_dY,0);
-	MathUtil::RotateZ(pt3d,SIZE_OF_POINT,-1);
-	MathUtil::Translate(pt3d,SIZE_OF_POINT,m_dX,m_dY,0);
-
-	degree += -1;
-	if(degree<0) degree = 359;
-	Util::LOG(L"degree=%d",degree);
+	Rotate(-1);
 }
 void Wheel::turn_right()
 {
-	MathUtil::Translate(pt3d,SIZE_OF_POINT,-m_dX,-m_dY,0);
-	MathUtil::RotateZ(pt3d,SIZE_OF_POINT,1);
-	MathUtil::Translate(pt3d,SIZE_OF_POINT,m_dX,m_dY,0);
-
-	degree += 1;
-	if(degree>359) degree = 0;
-	Util::LOG(L"degree=%d",degree);
+	Rotate(1);
 }
 
 void Wheel::Translate(double x,double y,double z)
@@ -89,6 +73,26 @@ void Wheel::ScaleCar(double ratio)
 	 m_dY=(pt3d+1)->y;
 	m_dRatio *= ratio;
 }
+void Wheel::Rotate(double degree)
+{
+	Rotate(degree,m_dX,m_dY,0);
+}
+void Wheel::Rotate(double degree,double x,double y,double z)
+{
+	MathUtil::Translate(pt3d,SIZE_OF_POINT,-x,-y,0);
+	MathUtil::RotateZ(pt3d,SIZE_OF_POINT,degree);
+	MathUtil::Translate(pt3d,SIZE_OF_POINT,x,y,0);
+
+	 m_dX=(pt3d+1)->x;
+	 m_dY=(pt3d+1)->y;
+
+	m_degree += degree;
+
+	if(m_degree>359) m_degree = 0;
+
+	if(m_degree<0) m_degree = 359;
+
+}
  void Wheel::draw(CPaintDC &dc)
  {
 	 for(int i=0;i<SIZE_OF_POINT;i++)
@@ -99,3 +103,8 @@ void Wheel::ScaleCar(double ratio)
 	dc.Polygon(pt,SIZE_OF_POINT);
  }
 
+Wheel::~Wheel(void)
+{
+	delete []pt;
+	delete []pt3d;
+}
