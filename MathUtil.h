@@ -23,5 +23,6 @@ public:
    static void RotateY(ThreeDPoint pt[],int size,double degree);
    static void RotateZ(ThreeDPoint pt[],int size,double degree);
    static void Scale(ThreeDPoint pt[],int size,double ratio);
+   static double GetDistance(ThreeDPoint p1,ThreeDPoint p2); 
 };
 

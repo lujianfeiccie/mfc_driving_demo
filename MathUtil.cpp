@@ -133,3 +133,8 @@ void MathUtil::MultipleMarix(double pt[1][4],double matrix[4][4],double result[1
 
 	 delete []temp;
   }
+  double MathUtil::GetDistance(ThreeDPoint p1,ThreeDPoint p2)
+  {
+	  double result = sqrt((p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)* (p1.y - p2.y));
+	  return result;
+  }
