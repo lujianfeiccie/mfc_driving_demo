@@ -36,9 +36,10 @@ protected:
 
 	
 	Car* m_car;
-	
+	IControl* m_space;
 public:
 	afx_msg void OnItemGuideLine();
 	void OnUpdateImprove(CCmdUI *pCmdUI);
+	afx_msg void OnItemRightTurn();
 };
 

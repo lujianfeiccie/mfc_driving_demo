@@ -6,6 +6,7 @@
 #include "DrivingDemo.h"
 #include "ChildView.h"
 #include "Util.h"
+#include "SpaceTurnRight.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -15,7 +16,7 @@
 
 CChildView::CChildView()
 {
-	
+	m_space = NULL;
 	m_car = new Car();
 	m_car->setParams(
 			 163.000000 ,  //x
@@ -55,6 +56,7 @@ BEGIN_MESSAGE_MAP(CChildView, CWnd)
 	ON_WM_PAINT()
 	ON_COMMAND(ID_ITEM_GUIDE_LINE, &CChildView::OnItemGuideLine)
 	ON_UPDATE_COMMAND_UI(ID_ITEM_GUIDE_LINE, &CChildView::OnUpdateImprove)
+	ON_COMMAND(ID_ITEM_RIGHT_TURN, &CChildView::OnItemRightTurn)
 END_MESSAGE_MAP()
 
 
@@ -83,6 +85,7 @@ void CChildView::OnPaint()
 	
 	// 不要为绘制消息而调用 CWnd::OnPaint()
 	m_car->draw(dc);
+	if(m_space!=NULL) m_space->draw(dc);
 }
 
 BOOL CChildView::PreTranslateMessage(MSG* pMsg) 
@@ -153,15 +156,38 @@ BOOL bShift=::GetKeyState(VK_SHIFT)&0x8000;
 	if(pMsg->message==WM_KEYDOWN && pMsg->wParam==VK_ESCAPE) return TRUE;  
 	return CWnd::PreTranslateMessage(pMsg); 
 } 
+typedef enum{
+	TYPE_GUIDE_LINE,
+	TYPE_TURN_RIGHT
+}MENU_ITEM_TYPE;
 BOOL check_guide_line = FALSE;
-
+MENU_ITEM_TYPE m_type;
 void CChildView::OnItemGuideLine()
 {
 	// TODO: 在此添加命令处理程序代码
 	check_guide_line = !check_guide_line;
     m_car->m_show_guide_line = check_guide_line;
+	
 }
 void CChildView::OnUpdateImprove(CCmdUI *pCmdUI)
 {
-	   pCmdUI->SetCheck(check_guide_line);
+	if(m_type == MENU_ITEM_TYPE::TYPE_GUIDE_LINE)
+	{
+	   pCmdUI->SetRadio(check_guide_line);	   
+	}
+}
+
+void CChildView::OnItemRightTurn()
+{
+	// TODO: 在此添加命令处理程序代码
+	if(m_space!=NULL)
+	{
+		delete m_space;
+		m_space = NULL;
+	}
+	m_space = new SpaceTurnRight();
+	((SpaceTurnRight*)m_space)->setParams( 163.000000 ,  //x
+										   360.000000   //y
+										   );
+
 }

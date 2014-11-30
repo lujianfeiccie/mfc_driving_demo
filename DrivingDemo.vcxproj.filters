@@ -57,6 +57,9 @@
     <ClInclude Include="Car.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="SpaceTurnRight.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DrivingDemo.cpp">
@@ -84,6 +87,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Car.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SpaceTurnRight.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
