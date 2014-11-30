@@ -39,7 +39,11 @@ protected:
 	IControl* m_space;
 public:
 	afx_msg void OnItemGuideLine();
+	BOOL OnEraseBkgnd(CDC* pDC);
 	void OnUpdateImprove(CCmdUI *pCmdUI);
 	afx_msg void OnItemRightTurn();
+	afx_msg void OnItemFree();
+	afx_msg void OnAppExit();
+
 };
 

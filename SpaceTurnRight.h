@@ -1,6 +1,7 @@
 #pragma once
 #include "IControl.h"
 #include "Car.h"
+#include "MathUtil.h"
 class SpaceTurnRight : public IControl
 {
 public:
@@ -13,8 +14,11 @@ public:
   void Scale(double ratio,double x,double y,double z);
   void Rotate(double degree);
   void Rotate(double degree,double x,double y,double z);
-  void draw(CPaintDC &dc);	
+  void draw(CDC &dc);	
 private:
 	Car *car;
+	ThreeDPoint* m_pt3d;
+	CPoint* m_pt;
+	BOOL m_bFirstDraw;
 };
 

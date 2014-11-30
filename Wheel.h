@@ -11,9 +11,9 @@ public:
 
   //Interface
 
-  void draw(CPaintDC &dc);
+  void draw(CDC &dc);
 
-  //self
+ 
 
     void go_foward();
 

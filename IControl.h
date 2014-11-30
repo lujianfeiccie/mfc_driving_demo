@@ -12,11 +12,8 @@ public:
  double m_dY;
 
  double m_degree;
-public:
 
-
-
- virtual  void draw(CPaintDC &dc)=0;
+ virtual  void draw(CDC &dc)=0;
  virtual void Translate(double x,double y,double z)=0;
  virtual void Scale(double ratio)=0;
  virtual void Scale(double ratio,double x,double y,double z)=0;

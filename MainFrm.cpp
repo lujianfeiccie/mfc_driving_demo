@@ -43,6 +43,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("未能创建视图窗口\n");
 		return -1;
 	}
+		SetWindowText(L"驾考模拟");
 	return 0;
 }
 
@@ -58,6 +59,8 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 
 	cs.dwExStyle &= ~WS_EX_CLIENTEDGE;
 	cs.lpszClass = AfxRegisterWndClass(0);
+
+
 	return TRUE;
 }
 

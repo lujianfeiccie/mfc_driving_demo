@@ -90,7 +90,7 @@ void Wheel::Rotate(double degree,double x,double y,double z)
 	m_degree += degree;
 
 }
- void Wheel::draw(CPaintDC &dc)
+ void Wheel::draw(CDC &dc)
  {
 	 for(int i=0;i<SIZE_OF_POINT;i++)
 	 {
