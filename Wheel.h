@@ -6,7 +6,7 @@ class Wheel :
 {
 public:
 	Wheel();
-	void setParams(int x,int y,double car_cx,double car_cy,double ratio,double m_fWheel_diameter);
+	void setParams(int x,int y,double car_cx,double car_cy,double m_fWheel_diameter);
 	~Wheel(void);
 
   //Interface
@@ -26,6 +26,7 @@ public:
 	void Translate(double x,double y,double z);
 	void Scale(double ratio);
 	void ScaleCar(double ratio);
+
 	void Rotate(double degree);
 	void Rotate(double degree,double x,double y,double z);
 	CPoint* pt;

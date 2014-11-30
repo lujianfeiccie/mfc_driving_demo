@@ -22,8 +22,6 @@ CChildView::CChildView()
 
 			 360.000000,   //y
 
-			 0.100614,     //ratio
-
 			 4415, //长度(mm) 4415  
 
 			  1674,  //宽度(mm) 1674  
@@ -38,6 +36,8 @@ CChildView::CChildView()
 
 				381 //轮胎直径(mm) 381  R15 inch 
 				);
+	m_car->Scale( 0.100614 );     //ratio
+	m_car->Rotate(90);
 	//163.000000 , 360.000000,0.150614
 	//m_car = new Car(124.000000 , 295.000000 , 1);
 	//原先900,2500

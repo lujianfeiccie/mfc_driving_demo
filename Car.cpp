@@ -34,8 +34,6 @@ void Car::setParams(
 
 	double y,
 
-	double ratio,
-
 	double m_fLength, //长度(mm) 4415  
 
     double m_fWidth,  //宽度(mm) 1674  
@@ -93,18 +91,13 @@ void Car::setParams(
 	(pt3d_mid+5)->x = m_dX; (pt3d_mid+5)->y = m_dY + m_fWheelbase / 2.0;
 
 	//前轮胎
-	m_wheel_front_left->setParams( m_dX -m_fWidth / 2.0 ,m_dY - m_fWheelbase / 2.0, m_dX, m_dY,m_dRatio, m_fWheel_diameter);
-	m_wheel_front_right->setParams( m_dX +m_fWidth / 2.0 ,m_dY - m_fWheelbase / 2.0, m_dX, m_dY,m_dRatio, m_fWheel_diameter);
+	m_wheel_front_left->setParams( m_dX -m_fFront_tread / 2.0 ,m_dY - m_fWheelbase / 2.0, m_dX, m_dY, m_fWheel_diameter);
+	m_wheel_front_right->setParams( m_dX +m_fFront_tread / 2.0 ,m_dY - m_fWheelbase / 2.0, m_dX, m_dY, m_fWheel_diameter);
 	
-	m_wheel_front_left->ScaleCar(ratio);
-	m_wheel_front_right->ScaleCar(ratio);
-
 	//后轮胎
-	m_wheel_rear_left->setParams( m_dX -m_fWidth / 2.0 ,m_dY + m_fWheelbase / 2.0, m_dX, m_dY,m_dRatio, m_fWheel_diameter);
-	m_wheel_rear_right->setParams( m_dX +m_fWidth / 2.0 ,m_dY + m_fWheelbase / 2.0, m_dX, m_dY,m_dRatio, m_fWheel_diameter);
+	m_wheel_rear_left->setParams( m_dX -m_fRear_tread / 2.0 ,m_dY + m_fWheelbase / 2.0, m_dX, m_dY,m_fWheel_diameter);
+	m_wheel_rear_right->setParams( m_dX +m_fRear_tread / 2.0 ,m_dY + m_fWheelbase / 2.0, m_dX, m_dY,m_fWheel_diameter);
 	
-	m_wheel_rear_left->ScaleCar(ratio);
-	m_wheel_rear_right->ScaleCar(ratio);
 
 	//后轴
 	for(int i=0;i<2;i++) (pt3d_rear_wheel + i)->z = 0;
@@ -122,8 +115,6 @@ void Car::setParams(
 
 	(pt3d_rear+3)->x = m_dX + m_fWidth / 2.0;(pt3d_rear+3)->y =m_dY + m_fWheelbase / 2.0 + m_fWheel_diameter / 2.0 + m_fWheel_diameter / 5.0;
 
-
-	Scale(ratio);
 }
 
 void Car::Translate(double x,double y,double z)
@@ -149,43 +140,115 @@ void Car::Translate(double x,double y,double z)
 	
 	Util::LOG(L"(%lf , %lf)",m_dX,m_dY);
 }
+void calc_radius(double a,//车身与车轮夹角
+			     double wheelbase,//轴距
+				 double *radius
+			     )//计算旋转半径
+{
+	
+	//计算旋转半径
+	*radius = tan(a * PI / 180) * wheelbase;
+
+}
+
 void Car::turn_left()
 {
 	m_wheel_front_left->turn_left();
 	m_wheel_front_right->turn_left();
-	double a = 90.0 - abs((double)m_wheel_front_right->m_degree - m_degree);
+	double a = 90.0 - abs((double)m_wheel_front_left->m_degree - m_degree);//车身与左前轮垂线夹角
 
-	//计算轴距
-	double tmp_wheel_base = m_fWheelbase * m_dRatio;
+	calc_radius(a, //车身与车轮夹角
+				m_fWheelbase * m_dRatio, //轴距
+				&m_radius //得出半径长度
+				);
 
-	//计算旋转半径
-	m_radius = tan(a * PI / 180) * tmp_wheel_base;
+	double degree_offset = m_wheel_front_left ->m_degree - m_degree;//车身与左前轮夹角
 
 	//计算旋转中心
-	m_rotate_center.x = (pt3d_rear_wheel+1)->x + abs(cos(m_degree * PI / 180)) * m_radius;
-	m_rotate_center.y = (pt3d_rear_wheel+1)->y + abs(sin(m_degree * PI / 180)) * m_radius;
+	if(degree_offset>0)//轮胎相对车身偏右
+	{
+		//叠加右胎位置
+			m_rotate_center.x = (pt3d_rear_wheel+1)->x + cos(m_degree * PI / 180) * m_radius;
+			m_rotate_center.y = (pt3d_rear_wheel+1)->y + sin(m_degree * PI / 180) * m_radius;
 
-	Util::LOG(L"wheel degree=%lf m_radius=%lf center(%lf,%lf)",a,m_radius,m_rotate_center.x,m_rotate_center.y);
+			//调整右胎转角对应圆心
+		/*	double wheelbase = m_fWheelbase * m_dRatio;//轴距
+			double side_between_right_wheel_and_center  = MathUtil::GetDistance(m_rotate_center,*(pt3d_rear_wheel+1));//右轮和圆心距离
+			double internal_degree = acos(wheelbase / side_between_right_wheel_and_center) * 180.0/PI;//右车轮和半径夹角
+			double right_wheel_degree = 90-internal_degree + m_degree;
+		 
+			m_wheel_front_right->Rotate(-m_wheel_front_right->m_degree);
+			m_wheel_front_right->Rotate(right_wheel_degree);*/
+	}
+	else //轮胎相对车身偏左
+	{
+		//叠加左胎位置
+	    	m_rotate_center.x = (pt3d_rear_wheel+0)->x - cos(m_degree * PI / 180) * m_radius;
+    		m_rotate_center.y = (pt3d_rear_wheel+0)->y - sin(m_degree * PI / 180) * m_radius;
+
+			//调整右胎转角对应圆心
+			/*double wheelbase = m_fWheelbase * m_dRatio;//轴距
+			double side_between_right_wheel_and_center  = MathUtil::GetDistance(m_rotate_center,*(pt3d_rear_wheel+1));//右轮和圆心距离
+			double internal_degree = acos(wheelbase / side_between_right_wheel_and_center) * 180.0/PI;//左车轮和半径夹角
+			double right_wheel_degree = 90-internal_degree + m_degree;
+				
+			m_wheel_front_right->Rotate(-m_wheel_front_right->m_degree);
+			m_wheel_front_right->Rotate(-right_wheel_degree);*/
+	}
+	Util::LOG(L"left degree = %lf  right degree = %lf (%lf,%lf)",m_wheel_front_left->m_degree,m_wheel_front_right->m_degree,
+		m_wheel_front_right->m_dX,m_wheel_front_right->m_dY);
+/*	CString tmp; tmp.Format(L"%lf",m_wheel_front_right->m_dX);
+		//1.#QNAN0
+	if(L"1.#QNAN0"==tmp)
+	{
+		//m_wheel_front_right->setParams(
+	}*/
+	//Util::LOG(L"wheel degree=%lf m_radius=%lf center(%lf,%lf)",a,m_radius,m_rotate_center.x,m_rotate_center.y);
 }
 void Car::turn_right()
 {
 	m_wheel_front_left->turn_right();
 	m_wheel_front_right->turn_right();
+	double a = 90.0 - abs((double)m_wheel_front_right->m_degree - m_degree);//车身与右前轮垂线夹角
 
-	//计算前轮偏角
-	double a = 90.0 - abs((double)m_wheel_front_right->m_degree - m_degree);
+	calc_radius(a,m_fWheelbase * m_dRatio, &m_radius);
 
-	//计算轴距
-	double tmp_wheel_base = m_fWheelbase * m_dRatio;
-
-	//计算旋转半径
-	m_radius = tan(a * PI / 180) * tmp_wheel_base;
+	double degree_offset = m_wheel_front_right ->m_degree - m_degree;//右前轮和车身的夹角
 	
 	//计算旋转中心
-	m_rotate_center.x = (pt3d_rear_wheel+1)->x + abs(cos(m_degree * PI / 180)) * m_radius;
-	m_rotate_center.y = (pt3d_rear_wheel+1)->y + abs(sin(m_degree * PI / 180)) * m_radius;
+	if(degree_offset>0)//轮胎相对车身偏右
+	{
+		//叠加右胎位置
+			m_rotate_center.x = (pt3d_rear_wheel+1)->x + cos(m_degree * PI / 180) * m_radius;
+			m_rotate_center.y = (pt3d_rear_wheel+1)->y + sin(m_degree * PI / 180) * m_radius;
 
-	Util::LOG(L"wheel degree=%lf m_radius=%lf center(%lf,%lf)",a,m_radius,m_rotate_center.x,m_rotate_center.y);
+			
+			/*//调整左胎转角对应圆心
+			double wheelbase = m_fWheelbase * m_dRatio;//轴距
+			double side_between_left_wheel_and_center  = MathUtil::GetDistance(m_rotate_center,*(pt3d_rear_wheel+0));//左轮和圆心距离
+			double internal_degree = acos(wheelbase / side_between_left_wheel_and_center) * 180.0/PI;//左车轮和半径夹角
+			double left_wheel_degree = 90-internal_degree + m_degree;
+				
+			m_wheel_front_left->Rotate( -m_wheel_front_left->m_degree);
+			m_wheel_front_left->Rotate(left_wheel_degree);*/
+	}
+	else //轮胎相对车身偏左
+	{
+		//叠加左胎位置
+	    	m_rotate_center.x = (pt3d_rear_wheel+0)->x - cos(m_degree * PI / 180) * m_radius;
+    		m_rotate_center.y = (pt3d_rear_wheel+0)->y - sin(m_degree * PI / 180) * m_radius;
+
+			//调整左胎转角对应圆心
+			/*double wheelbase = m_fWheelbase * m_dRatio;//轴距
+			double side_between_left_wheel_and_center  = MathUtil::GetDistance(m_rotate_center,*(pt3d_rear_wheel+0));//左轮和圆心距离
+			double internal_degree = acos(wheelbase / side_between_left_wheel_and_center) * 180.0/PI;//左车轮和半径夹角
+			double left_wheel_degree = 90-internal_degree + m_degree;
+				
+			m_wheel_front_left->Rotate(-m_wheel_front_left->m_degree);
+			m_wheel_front_left->Rotate(-left_wheel_degree);*/
+	}
+	Util::LOG(L"left degree = %lf  right degree = %lf",m_wheel_front_left->m_degree,m_wheel_front_right->m_degree);
+//	Util::LOG(L"wheel degree=%lf m_radius=%lf center(%lf,%lf)",a,m_radius,m_rotate_center.x,m_rotate_center.y);
 }
 void Car::Scale(double ratio)
 {
@@ -221,6 +284,12 @@ void Car::Scale(double ratio,double x,double y,double z)
 	MathUtil::Scale(pt3d_rear,4,ratio);
 	MathUtil::Translate(pt3d_rear,4,x,y,z);
 
+	//四个轮子
+	m_wheel_front_left->ScaleCar(ratio);
+	m_wheel_front_right->ScaleCar(ratio);
+
+	m_wheel_rear_left->ScaleCar(ratio);
+	m_wheel_rear_right->ScaleCar(ratio);
 	m_dRatio *= ratio;
 	Util::LOG(L"m_dRatio=%lf",m_dRatio);
 }
@@ -270,7 +339,9 @@ void Car::Rotate(double degree,double x,double y,double z)
 void Car::go_forward()
 {
 	Util::LOG(L"front=%lf car=%lf",m_wheel_front_left->m_degree,m_degree);
-	if(m_wheel_front_left->m_degree - m_degree ==0 )
+
+	double degree_offset = m_wheel_front_right->m_degree - m_degree;
+	if(0 == degree_offset)
 	{
 		Translate(sin(m_wheel_front_left->m_degree * PI / 180.0),
 			      -cos(m_wheel_front_left->m_degree * PI / 180.0),
@@ -279,13 +350,18 @@ void Car::go_forward()
 	}
 	else
 	{
-		Rotate(1,m_rotate_center.x,m_rotate_center.y,0);
+		double length_of_arc= PI * m_radius / 180.0;
 
+		if(degree_offset > 0)
+			Rotate(1/length_of_arc,m_rotate_center.x,m_rotate_center.y,0);
+		else
+			Rotate(-1/length_of_arc,m_rotate_center.x,m_rotate_center.y,0);
 	}
 }
 void Car::go_backward()
 {
-	if(m_wheel_front_left->m_degree - m_degree ==0 )
+	double degree_offset = m_wheel_front_left->m_degree - m_degree;
+	if( 0==degree_offset )
 	{
 		Translate(sin(m_wheel_front_left->m_degree * PI / 180.0),
 			      cos(m_wheel_front_left->m_degree * PI / 180.0),
@@ -294,8 +370,12 @@ void Car::go_backward()
 	}
 	else
 	{
-		Rotate(-1,m_rotate_center.x,m_rotate_center.y,0);
+		double length_of_arc= PI * m_radius / 180.0;
 
+		if(degree_offset > 0)
+			Rotate(-1/length_of_arc,m_rotate_center.x,m_rotate_center.y,0);
+		else
+			Rotate(1/length_of_arc,m_rotate_center.x,m_rotate_center.y,0);
 	}
 }
 void Car::draw(CPaintDC &dc)
@@ -355,10 +435,19 @@ void Car::draw(CPaintDC &dc)
 	dc.LineTo(*(pt_rear+2));
 	dc.LineTo(*(pt_rear+3));
 
+	//绘制车轮
 	m_wheel_front_left->draw(dc);
 	m_wheel_front_right->draw(dc);
 	m_wheel_rear_left->draw(dc);
 	m_wheel_rear_right->draw(dc);
+
+	//计算旋转中心
+	dc.Ellipse(m_rotate_center.x - m_radius,m_rotate_center.y - m_radius,
+				m_rotate_center.x + m_radius,m_rotate_center.y + m_radius);
+
+	int width_of_pixel=5;
+	dc.Ellipse(m_rotate_center.x - width_of_pixel,m_rotate_center.y - width_of_pixel,
+				m_rotate_center.x + width_of_pixel,m_rotate_center.y + width_of_pixel);
 }
 
 

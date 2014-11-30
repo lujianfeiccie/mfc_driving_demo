@@ -6,17 +6,16 @@ Wheel::Wheel()
 {
 	pt = new CPoint[SIZE_OF_POINT];
 	pt3d = new ThreeDPoint[SIZE_OF_POINT];
-
+	this->m_dRatio = 1;
 	//setParams(x,y,100);
 }
-void Wheel::setParams(int x,int y,double car_cx,double car_cy,double ratio,double m_fWheel_diameter)
+void Wheel::setParams(int x,int y,double car_cx,double car_cy,double m_fWheel_diameter)
 {
 	this->m_dX = x;
 	this->m_dY = y;
 	this->m_fWheel_diameter = m_fWheel_diameter;
 	this->m_car_cx = car_cx;
 	this->m_car_cy = car_cy;
-	this->m_dRatio = ratio;
 	this->m_degree = 0;
 	for(int i=0;i<SIZE_OF_POINT;i++) (pt3d+i)->z = 0;
 
@@ -87,10 +86,6 @@ void Wheel::Rotate(double degree,double x,double y,double z)
 	 m_dY=(pt3d+1)->y;
 
 	m_degree += degree;
-
-	if(m_degree>359) m_degree = 0;
-
-	if(m_degree<0) m_degree = 359;
 
 }
  void Wheel::draw(CPaintDC &dc)

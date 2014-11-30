@@ -13,8 +13,6 @@ public:
 
 	double y,
 
-	double ratio,
-		
 	double m_fLength, //长度(mm) 4415  
 
     double m_fWidth,  //宽度(mm) 1674  
@@ -71,7 +69,7 @@ public:
 	ThreeDPoint m_rotate_center; //转弯参照圆心
 	void Translate(double x,double y,double z);
 	void turn_left();
-	void turn_right();
+	void turn_right();	
 	void Scale(double ratio);
 	void Scale(double ratio,double x,double y,double z);
 	void Rotate(double degree);
@@ -79,5 +77,6 @@ public:
 	void go_forward();
 	void go_backward();
 	void draw(CPaintDC &dc);
+ 
 };
 
