@@ -53,6 +53,8 @@ CChildView::~CChildView()
 
 BEGIN_MESSAGE_MAP(CChildView, CWnd)
 	ON_WM_PAINT()
+	ON_COMMAND(ID_ITEM_GUIDE_LINE, &CChildView::OnItemGuideLine)
+	ON_UPDATE_COMMAND_UI(ID_ITEM_GUIDE_LINE, &CChildView::OnUpdateImprove)
 END_MESSAGE_MAP()
 
 
@@ -69,6 +71,7 @@ BOOL CChildView::PreCreateWindow(CREATESTRUCT& cs)
 	cs.lpszClass = AfxRegisterWndClass(CS_HREDRAW|CS_VREDRAW|CS_DBLCLKS, 
 		::LoadCursor(NULL, IDC_ARROW), reinterpret_cast<HBRUSH>(COLOR_WINDOW+1), NULL);
 
+	
 	return TRUE;
 }
 
@@ -150,3 +153,15 @@ BOOL bShift=::GetKeyState(VK_SHIFT)&0x8000;
 	if(pMsg->message==WM_KEYDOWN && pMsg->wParam==VK_ESCAPE) return TRUE;  
 	return CWnd::PreTranslateMessage(pMsg); 
 } 
+BOOL check_guide_line = FALSE;
+
+void CChildView::OnItemGuideLine()
+{
+	// TODO: 在此添加命令处理程序代码
+	check_guide_line = !check_guide_line;
+    m_car->m_show_guide_line = check_guide_line;
+}
+void CChildView::OnUpdateImprove(CCmdUI *pCmdUI)
+{
+	   pCmdUI->SetCheck(check_guide_line);
+}

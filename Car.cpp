@@ -6,6 +6,7 @@
 #define ERROR 0.0000001
 Car::Car()
 {
+	m_show_guide_line = FALSE;
 	m_degree = 0;
 	m_dRatio = 1;
 	m_wheel_front_left = new Wheel();
@@ -408,7 +409,10 @@ void Car::draw(CPaintDC &dc)
 	m_wheel_rear_left->draw(dc);
 	m_wheel_rear_right->draw(dc);
 
-	//计算旋转中心
+
+	if(!m_show_guide_line) return;
+
+	//画辅助线
   	CBrush br;
 	 CPen pen;
 	 DWORD gColor=RGB(0XFF,0X1F,0XFF);

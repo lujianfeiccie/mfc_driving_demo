@@ -79,6 +79,6 @@ public:
 	void go_forward();
 	void go_backward();
 	void draw(CPaintDC &dc);
- 
+	BOOL m_show_guide_line ;
 };
 

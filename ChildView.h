@@ -37,5 +37,8 @@ protected:
 	
 	Car* m_car;
 	
+public:
+	afx_msg void OnItemGuideLine();
+	void OnUpdateImprove(CCmdUI *pCmdUI);
 };
 
