@@ -25,7 +25,9 @@ public:
 
     double m_fRear_tread,  //后轮距(mm) 1422  
 
-    double m_fWheel_diameter //轮胎直径 
+    double m_fWheel_diameter, //轮胎直径 
+
+	double m_fWheel_width //轮胎厚度
 	);
 
 	double m_fLength; //长度(mm) 4415  

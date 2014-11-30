@@ -1,15 +1,14 @@
 #include "StdAfx.h"
 #include "Wheel.h"
 #include "Util.h"
-#define SIZE_OF_POINT 3
+#define SIZE_OF_POINT 5
 Wheel::Wheel()
 {
 	pt = new CPoint[SIZE_OF_POINT];
 	pt3d = new ThreeDPoint[SIZE_OF_POINT];
 	this->m_dRatio = 1;
-	//setParams(x,y,100);
 }
-void Wheel::setParams(int x,int y,double car_cx,double car_cy,double m_fWheel_diameter)
+void Wheel::setParams(int x,int y,double car_cx,double car_cy,double m_fWheel_diameter,double m_fWheel_width)
 {
 	this->m_dX = x;
 	this->m_dY = y;
@@ -17,13 +16,15 @@ void Wheel::setParams(int x,int y,double car_cx,double car_cy,double m_fWheel_di
 	this->m_car_cx = car_cx;
 	this->m_car_cy = car_cy;
 	this->m_degree = 0;
+	this->m_fWheel_width = m_fWheel_width;
 	for(int i=0;i<SIZE_OF_POINT;i++) (pt3d+i)->z = 0;
 
-	(pt3d+0)->x = x;(pt3d+0)->y = y-m_fWheel_diameter/2.0;
+	(pt3d+4)->x = x;(pt3d+4)->y = y;//中心点
 
-	(pt3d+1)->x = x;(pt3d+1)->y = y;
-
-	(pt3d+2)->x = x;(pt3d+2)->y = y+m_fWheel_diameter/2.0;
+	(pt3d+0)->x = x-m_fWheel_width /2.0; (pt3d+0)->y = y-m_fWheel_diameter/2.0;//左上角
+	(pt3d+1)->x = x+m_fWheel_width /2.0; (pt3d+1)->y = y-m_fWheel_diameter/2.0;//右上角
+	(pt3d+2)->x = x+m_fWheel_width /2.0; (pt3d+2)->y = y+m_fWheel_diameter/2.0;//右下角
+	(pt3d+3)->x = x-m_fWheel_width /2.0; (pt3d+3)->y = y+m_fWheel_diameter/2.0;//左下角
 
 	this->m_car_cx = car_cx;
 	this->m_car_cy = car_cy;	
@@ -53,24 +54,25 @@ void Wheel::turn_right()
 void Wheel::Translate(double x,double y,double z)
 {
 	MathUtil::Translate(pt3d,SIZE_OF_POINT,x,y,z);
-	 m_dX=(pt3d+1)->x;
-	 m_dY=(pt3d+1)->y;
+	 m_dX=(pt3d+4)->x;
+	 m_dY=(pt3d+4)->y;
 }
 void Wheel::Scale(double ratio)
 {
-	MathUtil::Translate(pt3d,SIZE_OF_POINT,-m_dX,-m_dY,0);
+	Scale(ratio,m_dX,m_dY,0);
+}
+void Wheel::Scale(double ratio,double x,double y,double z)
+{
+	MathUtil::Translate(pt3d,SIZE_OF_POINT,-x,-y,z);
 	MathUtil::Scale(pt3d,SIZE_OF_POINT,ratio);
-	MathUtil::Translate(pt3d,SIZE_OF_POINT, m_dX, m_dY,0);
+	MathUtil::Translate(pt3d,SIZE_OF_POINT, x, y,z);
+	m_dRatio *= ratio;
 }
 void Wheel::ScaleCar(double ratio)
 {
-	MathUtil::Translate(pt3d,SIZE_OF_POINT,-m_car_cx,-m_car_cy,0);
-	MathUtil::Scale(pt3d,SIZE_OF_POINT,ratio);
-	MathUtil::Translate(pt3d,SIZE_OF_POINT, m_car_cx, m_car_cy,0);
-
-	 m_dX=(pt3d+1)->x;
-	 m_dY=(pt3d+1)->y;
-	m_dRatio *= ratio;
+	Scale(ratio, m_car_cx, m_car_cy,0);
+	 m_dX=(pt3d+4)->x;
+	 m_dY=(pt3d+4)->y;
 }
 void Wheel::Rotate(double degree)
 {
@@ -82,8 +84,8 @@ void Wheel::Rotate(double degree,double x,double y,double z)
 	MathUtil::RotateZ(pt3d,SIZE_OF_POINT,degree);
 	MathUtil::Translate(pt3d,SIZE_OF_POINT,x,y,0);
 
-	 m_dX=(pt3d+1)->x;
-	 m_dY=(pt3d+1)->y;
+	 m_dX=(pt3d+4)->x;
+	 m_dY=(pt3d+4)->y;
 
 	m_degree += degree;
 
@@ -95,7 +97,7 @@ void Wheel::Rotate(double degree,double x,double y,double z)
 		(pt+i)->x = (pt3d+i)->x;
 		(pt+i)->y = (pt3d+i)->y;
 	 }
-	dc.Polygon(pt,SIZE_OF_POINT);
+	dc.Polygon(pt,SIZE_OF_POINT-1);
  }
 
 Wheel::~Wheel(void)
