@@ -44,6 +44,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 	}
 		SetWindowText(L"驾考模拟");
+
 	return 0;
 }
 
@@ -55,12 +56,10 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 	//  CREATESTRUCT cs 来修改窗口类或样式
 
 	cs.style = WS_OVERLAPPED | WS_CAPTION | FWS_ADDTOTITLE
-		 | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
+		 | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_MINIMIZE | WS_SYSMENU;
 
 	cs.dwExStyle &= ~WS_EX_CLIENTEDGE;
 	cs.lpszClass = AfxRegisterWndClass(0);
-
-
 	return TRUE;
 }
 

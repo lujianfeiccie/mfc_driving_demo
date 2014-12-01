@@ -6,7 +6,7 @@
 #define ERROR 0.0000001
 Car::Car()
 {
-	m_show_guide_line = FALSE;
+	for(int i=0;i<4;++i) m_show_guide_line[i] = FALSE;
 	m_degree = 0;
 	m_dRatio = 1;
 	m_wheel_front_left = new Wheel();
@@ -140,10 +140,10 @@ void Car::Translate(double x,double y,double z)
 	m_wheel_rear_left->Translate(x,y,z);
 	m_wheel_rear_right->Translate(x,y,z);
 
-	if(x<0) --m_dX; else if(x>0) ++m_dX;
-	if(y<0) --m_dY; else if(y>0) ++m_dY;
+	this->m_dX += x;
+	this->m_dY += y;
 	
-	Util::LOG(L"(%lf , %lf)",m_dX,m_dY);
+	Util::LOG(L"Car::Translate(%lf,%lf)",m_dX,m_dY);
 }
 void calc_radius(double a,//车身与车轮夹角
 			     double wheelbase,//轴距
@@ -338,13 +338,11 @@ void Car::Rotate(double degree,double x,double y,double z)
 }
 void Car::go_forward()
 {
-	Util::LOG(L"front=%lf car=%lf",m_wheel_front_left->m_degree,m_degree);
-
 	double degree_offset = m_wheel_front_right->m_degree - m_degree;
 	if(0 == degree_offset)
 	{
-		Translate(sin(m_wheel_front_left->m_degree * PI / 180.0),
-			      -cos(m_wheel_front_left->m_degree * PI / 180.0),
+		Translate(sin(m_degree * PI / 180.0),
+			      -cos(m_degree * PI / 180.0),
 				  0);
 	 
 	}
@@ -363,10 +361,12 @@ void Car::go_backward()
 	double degree_offset = m_wheel_front_left->m_degree - m_degree;
 	if( 0==degree_offset )
 	{
-		Translate(sin(m_wheel_front_left->m_degree * PI / 180.0),
-			      cos(m_wheel_front_left->m_degree * PI / 180.0),
+	//	Util::LOG(L"sin(m_degree * PI / 180.0)=%lf cos(m_degree * PI / 180.0)=%lf m_degree=%lf",
+		//	sin(m_degree * PI / 180.0),cos(m_degree * PI / 180.0),m_degree);
+		Translate(-sin(m_degree * PI / 180.0),
+			      cos(m_degree * PI / 180.0),
 				  0);
-	 //Rotate(1,
+
 	}
 	else
 	{
@@ -459,48 +459,78 @@ void Car::draw(CDC &dc)
 	pen.CreatePen(PS_DOT,1,RGB(0XFF,0X1F,0XFF));//PS_DOT
 	CPen* pOldPen=dc.SelectObject(&pen);
 	CBrush* pOldBrush =dc.SelectObject(&br);
+
+	if(TRUE == m_show_guide_line[0])
+	{
 	//画圆心
 	int width_of_pixel=5;
 	dc.Ellipse(m_rotate_center.x - width_of_pixel,m_rotate_center.y - width_of_pixel,
 				m_rotate_center.x + width_of_pixel,m_rotate_center.y + width_of_pixel);
-
+	}
 	double degree_offset_left = m_wheel_front_left->m_degree - m_degree;
 	//Util::LOG(L"draw left degree = %lf  right degree = %lf degree=%lf degree_offset_left=%lf",m_wheel_front_left->m_degree,m_wheel_front_right->m_degree,m_degree,degree_offset_left);
 	
 	if(degree_offset_left>0+ERROR) //前轮相对车身偏右
 	{
+		if(TRUE == m_show_guide_line[1])
+		{
 		//画外圈
 	    double radius_outside = MathUtil::GetDistance(*(pt3d_front+1),m_rotate_center);
 		dc.Ellipse(m_rotate_center.x - radius_outside,m_rotate_center.y - radius_outside,
 				m_rotate_center.x + radius_outside,m_rotate_center.y + radius_outside);
-
-		//画中圈
-	    double radius_midside = MathUtil::GetDistance(*(pt3d_front_wheel+0),m_rotate_center);
-		dc.Ellipse(m_rotate_center.x - radius_midside,m_rotate_center.y - radius_midside,
-				m_rotate_center.x + radius_midside,m_rotate_center.y + radius_midside);
-
+		}
+		if(TRUE == m_show_guide_line[2])
+		{
+		//画外前轮圈
+	    double radius_front_wheel = MathUtil::GetDistance(*(pt3d_front_wheel+0),m_rotate_center);
+		dc.Ellipse(m_rotate_center.x - radius_front_wheel,m_rotate_center.y - radius_front_wheel,
+				m_rotate_center.x + radius_front_wheel,m_rotate_center.y + radius_front_wheel);
+		}
+		if(TRUE ==m_show_guide_line[3])
+		{
+		//画外后轮圈
+	    double radius_rear_wheel = MathUtil::GetDistance(*(pt3d_rear_wheel+0),m_rotate_center);
+		dc.Ellipse(m_rotate_center.x - radius_rear_wheel,m_rotate_center.y - radius_rear_wheel,
+				m_rotate_center.x + radius_rear_wheel,m_rotate_center.y + radius_rear_wheel);
+		}
+		if(TRUE == m_show_guide_line[0])
+		{
 		//画半径
 		dc.MoveTo((pt3d_rear_wheel+1)->x,(pt3d_rear_wheel+1)->y);
 		dc.LineTo(m_rotate_center.x,m_rotate_center.y);
-		
+		}
 	}
 	else if(degree_offset_left<0-ERROR)//前轮相对车身偏左
 	{
+		if(TRUE == m_show_guide_line[1])
+		{
 		//画外圈
 		double radius_outside = MathUtil::GetDistance(*(pt3d_front+2),m_rotate_center);
 		dc.Ellipse(m_rotate_center.x - radius_outside,m_rotate_center.y - radius_outside,
 			    m_rotate_center.x + radius_outside,m_rotate_center.y + radius_outside);
-
-		//画中圈
-	    double radius_midside = MathUtil::GetDistance(*(pt3d_front_wheel+1),m_rotate_center);
-		dc.Ellipse(m_rotate_center.x - radius_midside,m_rotate_center.y - radius_midside,
-				m_rotate_center.x + radius_midside,m_rotate_center.y + radius_midside);
-
+		}
+		if(TRUE == m_show_guide_line[2])
+		{
+		//画外前轮圈
+	    double radius_front_wheel = MathUtil::GetDistance(*(pt3d_front_wheel+1),m_rotate_center);
+		dc.Ellipse(m_rotate_center.x - radius_front_wheel,m_rotate_center.y - radius_front_wheel,
+				m_rotate_center.x + radius_front_wheel,m_rotate_center.y + radius_front_wheel);
+		}
+		if(TRUE == m_show_guide_line[3])
+		{
+		//画外后轮圈
+	    double radius_rear_wheel = MathUtil::GetDistance(*(pt3d_rear_wheel+1),m_rotate_center);
+		dc.Ellipse(m_rotate_center.x - radius_rear_wheel,m_rotate_center.y - radius_rear_wheel,
+				m_rotate_center.x + radius_rear_wheel,m_rotate_center.y + radius_rear_wheel);
+		}
+		if(TRUE == m_show_guide_line[0])
+		{
 		//画半径
 		dc.MoveTo((pt3d_rear_wheel+0)->x,(pt3d_rear_wheel+0)->y);
 		dc.LineTo(m_rotate_center.x,m_rotate_center.y);
+		}
 	}
-	if(degree_offset_left!=0)
+	if(TRUE == m_show_guide_line[0] && degree_offset_left != 0)
 	{
 	 //画内圈
 		dc.Ellipse(m_rotate_center.x - m_radius,m_rotate_center.y - m_radius,

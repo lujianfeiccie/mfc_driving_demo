@@ -7,6 +7,7 @@
 #include "ChildView.h"
 #include "Util.h"
 #include "SpaceTurnRight.h"
+#include "SpaceReverseParking.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -49,11 +50,19 @@ CChildView::CChildView()
 
 BEGIN_MESSAGE_MAP(CChildView, CWnd)
 	ON_WM_PAINT()
-	ON_COMMAND(ID_ITEM_GUIDE_LINE, &CChildView::OnItemGuideLine)
-	ON_UPDATE_COMMAND_UI(ID_ITEM_GUIDE_LINE, &CChildView::OnUpdateImprove)
+	ON_UPDATE_COMMAND_UI(ID_MENU_ITEM_RADIUS, &CChildView::OnMenuItemRadius)
+	ON_UPDATE_COMMAND_UI(ID_MENU_ITEM_OUTSIDE_FRONT_CAR, &CChildView::OnMenuItemOutsideFrontCar)
+	ON_UPDATE_COMMAND_UI(ID_MENU_ITEM_OUTSIDE_FRONT_WHEEL, &CChildView::OnMenuItemOutsideFrontWheel)
+	ON_UPDATE_COMMAND_UI(ID_MENU_ITEM_OUTSIDE_REAR_WHEEL, &CChildView::OnMenuItemOutsideRearWheel)
+	
 	ON_COMMAND(ID_ITEM_RIGHT_TURN, &CChildView::OnItemRightTurn)
 	ON_COMMAND(ID_ITEM_FREE, &CChildView::OnItemFree)
 	ON_COMMAND(ID_APP_EXIT, &CChildView::OnAppExit)
+	ON_COMMAND(ID_MENU_ITEM_RADIUS, &CChildView::OnMenuItemRadius)
+	ON_COMMAND(ID_MENU_ITEM_OUTSIDE_FRONT_CAR, &CChildView::OnMenuItemOutsideFrontCar)
+	ON_COMMAND(ID_MENU_ITEM_OUTSIDE_FRONT_WHEEL, &CChildView::OnMenuItemOutsideFrontWheel)
+	ON_COMMAND(ID_MENU_ITEM_OUTSIDE_REAR_WHEEL, &CChildView::OnMenuItemOutsideRearWheel)
+	ON_COMMAND(ID_ITEM_REVERSE_PARKING, &CChildView::OnItemReverseParking)
 END_MESSAGE_MAP()
 
 
@@ -115,39 +124,53 @@ if (pMsg->message==WM_KEYDOWN)
 	{ 
  		case 'W': 
 		{
-			Util::LOG(L"forward");
 			//m_wheel->go_foward();
-			m_car->go_forward();
+			//m_car->go_forward();
 
-		   //if(m_space!=NULL)	m_space->Translate(0,-1,0);
+		//   if(m_space!=NULL)	m_space->Translate(0,-1,0);
 			Invalidate(FALSE);
 		}
 		break;
 		case 'S': 
 		{
-			Util::LOG(L"backward");
 			//m_wheel->go_backward();
-			m_car->go_backward();
-		 	//if(m_space!=NULL) m_space->Translate(0,1,0);
+			//m_car->go_backward();
+		 //	if(m_space!=NULL) m_space->Translate(0,1,0);
 			Invalidate(FALSE);
 		}
 		break;
 		case 'A': 
 		{
-			Util::LOG(L"moveleft");
 			//m_wheel->go_backward();
-			//m_car->Translate(-1,0,0);
-		 	//if(m_space!=NULL) m_space->Translate(-1,0,0);
-			//Invalidate();
+		//	m_car->Translate(0,-1,0);
+		 //	if(m_space!=NULL) m_space->Translate(-1,0,0);
+			Invalidate(FALSE);
 		}
 		break;
 		case 'D': 
 		{
-			Util::LOG(L"moveright");
 			//m_wheel->go_backward();
-			//m_car->Translate(1,0,0);
-			//if(m_space!=NULL) m_space->Translate(1,0,0);
-			//Invalidate();
+		//	m_car->Translate(0,1,0);
+		//	if(m_space!=NULL) m_space->Translate(1,0,0);
+			Invalidate(FALSE);
+		}
+		break;
+		case VK_UP: 
+		{
+			//Util::LOG(L"left");
+			m_car->go_forward();
+			//m_car->Scale(0.999);
+			 
+			Invalidate(FALSE);
+		}
+		break;
+		case VK_DOWN: 
+		{
+			//Util::LOG(L"left");
+			m_car->go_backward();
+			//m_car->Scale(0.999);
+			 
+			Invalidate(FALSE);
 		}
 		break;
 		case VK_LEFT: 
@@ -182,27 +205,80 @@ BOOL bShift=::GetKeyState(VK_SHIFT)&0x8000;
 	if(pMsg->message==WM_KEYDOWN && pMsg->wParam==VK_ESCAPE) return TRUE;  
 	return CWnd::PreTranslateMessage(pMsg); 
 } 
+/*
 typedef enum{
-	TYPE_GUIDE_LINE,
+	TYPE_GUIDE_LINE_RADIUS,
+	TYPE_GUIDE_LINE_OUTSIDE_FRONT_CAR,
+	TYPE_GUIDE_LINE_OUTSIDE_FRONT_WHEEL,
+	TYPE_GUIDE_LINE_OUTSIDE_REAR_WHEEL,
 	TYPE_TURN_RIGHT
-}MENU_ITEM_TYPE;
-BOOL check_guide_line = FALSE;
-MENU_ITEM_TYPE m_type;
-void CChildView::OnItemGuideLine()
+}MENU_ITEM_TYPE;*/
+BOOL check_guide_line[4]={FALSE};
+//MENU_ITEM_TYPE m_type;
+
+void CChildView::OnMenuItemRadius(CCmdUI *pCmdUI)
 {
-	// TODO: 在此添加命令处理程序代码
-	check_guide_line = !check_guide_line;
-    m_car->m_show_guide_line = check_guide_line;
+	pCmdUI->SetRadio(check_guide_line[0]);	  
 	
 }
-void CChildView::OnUpdateImprove(CCmdUI *pCmdUI)
+void CChildView::OnMenuItemOutsideFrontCar(CCmdUI *pCmdUI)
 {
-	if(m_type == MENU_ITEM_TYPE::TYPE_GUIDE_LINE)
-	{
-	   pCmdUI->SetRadio(check_guide_line);	   
-	}
+	pCmdUI->SetRadio(check_guide_line[1]);	  
+}
+void CChildView::OnMenuItemOutsideFrontWheel(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetRadio(check_guide_line[2]);	  
+}
+void CChildView::OnMenuItemOutsideRearWheel(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetRadio(check_guide_line[3]);	  
+}
+void CChildView::OnMenuItemRadius()
+{
+	// TODO: 在此添加命令处理程序代码
+	Util::LOG(L"OnMenuItemRadius");
+	check_guide_line[0] = !check_guide_line[0];
+	m_car->m_show_guide_line[0]=check_guide_line[0];
+	Invalidate();
 }
 
+void CChildView::OnMenuItemOutsideFrontCar()
+{
+	// TODO: 在此添加命令处理程序代码
+	check_guide_line[1] = !check_guide_line[1];
+	m_car->m_show_guide_line[1]=check_guide_line[1];
+	Invalidate();
+}
+
+
+void CChildView::OnMenuItemOutsideFrontWheel()
+{
+	// TODO: 在此添加命令处理程序代码
+	check_guide_line[2] = !check_guide_line[2];
+	m_car->m_show_guide_line[2]=check_guide_line[2];
+	Invalidate();
+}
+
+
+void CChildView::OnMenuItemOutsideRearWheel()
+{
+	// TODO: 在此添加命令处理程序代码
+	check_guide_line[3] = !check_guide_line[3];
+	m_car->m_show_guide_line[3]=check_guide_line[3];
+	Invalidate();
+}
+//自由模式
+void CChildView::OnItemFree()
+{
+	// TODO: 在此添加命令处理程序代码
+	if(m_space!=NULL)
+	{
+		delete m_space;
+		m_space = NULL;
+	}
+	Invalidate();
+}
+//直角转弯模式
 void CChildView::OnItemRightTurn()
 {
 	// TODO: 在此添加命令处理程序代码
@@ -249,20 +325,65 @@ void CChildView::OnItemRightTurn()
 	m_space->Scale(m_car->m_dRatio);
 	Invalidate();
 
-    m_car->m_show_guide_line = check_guide_line;
+	for(int i=0;i<4;++i)
+    m_car->m_show_guide_line[i] = check_guide_line[i];
 }
 
 
-void CChildView::OnItemFree()
+void CChildView::OnItemReverseParking()
 {
+	// TODO: 在此添加命令处理程序代码
 	// TODO: 在此添加命令处理程序代码
 	if(m_space!=NULL)
 	{
 		delete m_space;
 		m_space = NULL;
 	}
+	if(m_car!=NULL)
+	{
+		delete m_car;
+		m_car = NULL;
+	}
+	m_space = new SpaceReverseParking();
+	((SpaceReverseParking*)m_space)->setParams( 684 ,  //x
+										   364   //y
+						 );
+	m_car = new Car;
+	m_car->setParams(
+			 402 ,  //x
+
+			 96,   //y
+
+			 4415, //长度(mm) 4415  
+
+			  1674,  //宽度(mm) 1674  
+
+              1415, //高度(mm) 1415  
+
+			   2471, //轴距(mm) 2471  
+
+				1429, //前轮距(mm) 1429 
+
+				1422,  //后轮距(mm) 1422  
+
+				381, //轮胎直径(mm) 381  R15 inch 
+
+				200 //轮胎厚度
+				);
+	m_car->Rotate(90);
+	m_car->Scale( 0.06 );     //ratio
+
+	((SpaceReverseParking*)m_space)->setCar(m_car);
+	m_space->Scale(m_car->m_dRatio);
+	
 	Invalidate();
+
+	for(int i=0;i<4;++i)
+    m_car->m_show_guide_line[i] = check_guide_line[i];
 }
+
+
+
 
 void CChildView::OnAppExit()
 {

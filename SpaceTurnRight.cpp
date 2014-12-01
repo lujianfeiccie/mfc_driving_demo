@@ -8,7 +8,7 @@ SpaceTurnRight::SpaceTurnRight(void)
 	m_bFirstDraw = TRUE;
 	m_pt3d = new ThreeDPoint[SIZE_OF_VERTEX];
 	m_pt = new CPoint[SIZE_OF_VERTEX];
-
+	m_tips = new ControlTips;
 	for(int i=0;i<SIZE_OF_VERTEX;i++) (m_pt3d+i)->z = 0;
 }
 void SpaceTurnRight::setParams(double x,double y)
@@ -19,11 +19,10 @@ void SpaceTurnRight::setParams(double x,double y)
 	(m_pt3d+SIZE_OF_VERTEX-1)->x = this->m_dX;
 	(m_pt3d+SIZE_OF_VERTEX-1)->y = this->m_dX;
 }
-void SpaceTurnRight::setCar(Car *car)
+void SpaceTurnRight::setCar(const Car *car)
 {
-	this->car = car;
 	
-	double width = this->car->m_fLength * 3;
+	double width = car->m_fLength * 3;
 	(m_pt3d+0)->x = this->m_dX - width / 2;//左上角
 	(m_pt3d+0)->y = this->m_dY - width / 2;
 
@@ -31,16 +30,20 @@ void SpaceTurnRight::setCar(Car *car)
 	(m_pt3d+1)->y = (m_pt3d+0)->y;
 
 	(m_pt3d+2)->x = (m_pt3d+1)->x;//右下角
-	(m_pt3d+2)->y = (m_pt3d+1)->y + this->car->m_fWheelbase + 1000;//路宽≈轴距+1米
+	(m_pt3d+2)->y = (m_pt3d+1)->y + car->m_fWheelbase + 1000;//路宽≈轴距+1米
 
-	(m_pt3d+3)->x = (m_pt3d+0)->x + this->car->m_fWheelbase + 1000;//内拐角
-	(m_pt3d+3)->y = (m_pt3d+0)->y + this->car->m_fWheelbase + 1000;
+	(m_pt3d+3)->x = (m_pt3d+0)->x + car->m_fWheelbase + 1000;//内拐角
+	(m_pt3d+3)->y = (m_pt3d+0)->y + car->m_fWheelbase + 1000;
 
 	(m_pt3d+4)->x = (m_pt3d+3)->x;//底右角
 	(m_pt3d+4)->y = this->m_dY + width / 2;
 
 	(m_pt3d+5)->x = (m_pt3d+0)->x;//底左角
 	(m_pt3d+5)->y = this->m_dY + width / 2;
+
+	m_tips->setParams((m_pt3d+3)->x+width/3, //内拐角x
+					  (m_pt3d+2)->y+width/3  //右下角y
+					  );
 }
 
  void SpaceTurnRight::Translate(double x,double y,double z)
@@ -48,6 +51,12 @@ void SpaceTurnRight::setCar(Car *car)
 	 MathUtil::Translate(m_pt3d,SIZE_OF_VERTEX,x,y,z);
 	 this->m_dX = (m_pt3d + SIZE_OF_VERTEX - 1)->x;
 	 this->m_dY = (m_pt3d + SIZE_OF_VERTEX - 1)->y;
+
+	 //调整提示位置
+	double width = abs((m_pt3d+0)->x -(m_pt3d+3)->x)/2;
+	m_tips->setParams((m_pt3d+3)->x+width, //内拐角x
+					  (m_pt3d+2)->y+width  //右下角y
+					  );
 	 Util::LOG(L"SpaceTurnRight translate(%lf,%lf)",this->m_dX,this->m_dY);
  }
  void SpaceTurnRight::Scale(double ratio)
@@ -59,6 +68,13 @@ void SpaceTurnRight::setCar(Car *car)
 	MathUtil::Translate(m_pt3d,SIZE_OF_VERTEX,-x,-y,-z);
 	MathUtil::Scale(m_pt3d,SIZE_OF_VERTEX,ratio);
 	MathUtil::Translate(m_pt3d,SIZE_OF_VERTEX,x,y,z);
+
+	//调整提示位置
+	double width = abs((m_pt3d+0)->x -(m_pt3d+3)->x)/2;
+	m_tips->setParams((m_pt3d+3)->x+width, //内拐角x
+					  (m_pt3d+2)->y+width  //右下角y
+					  );
+	
  }
  void SpaceTurnRight::Rotate(double degree)
  {
@@ -71,6 +87,12 @@ void SpaceTurnRight::setCar(Car *car)
 	MathUtil::Translate(m_pt3d,SIZE_OF_VERTEX,x,y,z);
 	 this->m_dX = (m_pt3d + SIZE_OF_VERTEX - 1)->x;
 	 this->m_dY = (m_pt3d + SIZE_OF_VERTEX - 1)->y;
+
+	//调整提示位置
+	double width = abs((m_pt3d+0)->x -(m_pt3d+3)->x)/2;
+	m_tips->setParams((m_pt3d+3)->x+width, //内拐角x
+					  (m_pt3d+2)->y+width  //右下角y
+					  );
  }
  void SpaceTurnRight::draw(CDC &dc)
 {
@@ -82,17 +104,23 @@ void SpaceTurnRight::setCar(Car *car)
 	}
 	}
 	CPen pen;   //绘制画笔
-	pen.CreatePen(PS_DASH,1,RGB(255,128,0));
+	pen.CreatePen(PS_SOLID,2,RGB(255,128,0));
 	CPen* poldpen = dc.SelectObject(&pen);
 
 	dc.Polygon(m_pt,SIZE_OF_VERTEX-1);
+
+
 	m_bFirstDraw = FALSE;
 	dc.SelectObject(poldpen);
+	pen.DeleteObject();
+
+	m_tips->draw(dc);
 	//pen.DeleteObject();
 }
 SpaceTurnRight::~SpaceTurnRight(void)
 {
 	delete []m_pt3d;
 	delete []m_pt;
+	delete m_tips;
 }
  

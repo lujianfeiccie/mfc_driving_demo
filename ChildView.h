@@ -38,12 +38,20 @@ protected:
 	Car* m_car;
 	IControl* m_space;
 public:
-	afx_msg void OnItemGuideLine();
+	
 	BOOL OnEraseBkgnd(CDC* pDC);
-	void OnUpdateImprove(CCmdUI *pCmdUI);
+	void OnMenuItemRadius(CCmdUI *pCmdUI);
+	void OnMenuItemOutsideFrontCar(CCmdUI *pCmdUI);
+	void OnMenuItemOutsideFrontWheel(CCmdUI *pCmdUI);
+	void OnMenuItemOutsideRearWheel(CCmdUI *pCmdUI);
 	afx_msg void OnItemRightTurn();
 	afx_msg void OnItemFree();
 	afx_msg void OnAppExit();
 
+	afx_msg void OnMenuItemRadius();
+	afx_msg void OnMenuItemOutsideFrontCar();
+	afx_msg void OnMenuItemOutsideFrontWheel();
+	afx_msg void OnMenuItemOutsideRearWheel();
+	afx_msg void OnItemReverseParking();
 };
 

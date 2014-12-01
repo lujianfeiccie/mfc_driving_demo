@@ -97,7 +97,17 @@ void Wheel::Rotate(double degree,double x,double y,double z)
 		(pt+i)->x = (pt3d+i)->x;
 		(pt+i)->y = (pt3d+i)->y;
 	 }
+	CPen MyPen,*OldPen;	
+	MyPen.CreatePen(PS_SOLID,1,RGB(0,0,0));
+	OldPen=dc.SelectObject(&MyPen);	
+	CBrush MyBrush,*OldBrush;	
+	MyBrush.CreateSolidBrush(RGB(0,0,0));
+	OldBrush=dc.SelectObject(&MyBrush);
+	//»æÖÆ
 	dc.Polygon(pt,SIZE_OF_POINT-1);
+
+	dc.SelectObject(OldPen);
+	dc.SelectObject(OldBrush);
  }
 
 Wheel::~Wheel(void)
