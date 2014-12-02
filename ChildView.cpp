@@ -8,6 +8,7 @@
 #include "Util.h"
 #include "SpaceTurnRight.h"
 #include "SpaceReverseParking.h"
+#include "SpaceSideParking.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -63,6 +64,7 @@ BEGIN_MESSAGE_MAP(CChildView, CWnd)
 	ON_COMMAND(ID_MENU_ITEM_OUTSIDE_FRONT_WHEEL, &CChildView::OnMenuItemOutsideFrontWheel)
 	ON_COMMAND(ID_MENU_ITEM_OUTSIDE_REAR_WHEEL, &CChildView::OnMenuItemOutsideRearWheel)
 	ON_COMMAND(ID_ITEM_REVERSE_PARKING, &CChildView::OnItemReverseParking)
+	ON_COMMAND(ID_ITEM_SIDE_PARKING, &CChildView::OnItemSideParking)
 END_MESSAGE_MAP()
 
 
@@ -124,34 +126,29 @@ if (pMsg->message==WM_KEYDOWN)
 	{ 
  		case 'W': 
 		{
-			//m_wheel->go_foward();
-			//m_car->go_forward();
-
-		//   if(m_space!=NULL)	m_space->Translate(0,-1,0);
+			//m_car->Translate(0,-1,0);
+		   //if(m_space!=NULL)	m_space->Translate(0,-1,0);
 			Invalidate(FALSE);
 		}
 		break;
 		case 'S': 
 		{
-			//m_wheel->go_backward();
-			//m_car->go_backward();
-		 //	if(m_space!=NULL) m_space->Translate(0,1,0);
+			//m_car->Translate(0,1,0);
+		 	//if(m_space!=NULL) m_space->Translate(0,1,0);
 			Invalidate(FALSE);
 		}
 		break;
 		case 'A': 
 		{
-			//m_wheel->go_backward();
-		//	m_car->Translate(0,-1,0);
-		 //	if(m_space!=NULL) m_space->Translate(-1,0,0);
+			//m_car->Translate(-1,0,0);
+		 	//if(m_space!=NULL) m_space->Translate(-1,0,0);
 			Invalidate(FALSE);
 		}
 		break;
 		case 'D': 
 		{
-			//m_wheel->go_backward();
-		//	m_car->Translate(0,1,0);
-		//	if(m_space!=NULL) m_space->Translate(1,0,0);
+			//m_car->Translate(1,0,0);
+			//if(m_space!=NULL) m_space->Translate(1,0,0);
 			Invalidate(FALSE);
 		}
 		break;
@@ -159,8 +156,6 @@ if (pMsg->message==WM_KEYDOWN)
 		{
 			//Util::LOG(L"left");
 			m_car->go_forward();
-			//m_car->Scale(0.999);
-			 
 			Invalidate(FALSE);
 		}
 		break;
@@ -384,6 +379,54 @@ void CChildView::OnItemReverseParking()
 
 
 
+void CChildView::OnItemSideParking()
+{
+	// TODO: 在此添加命令处理程序代码
+	if(m_space!=NULL)
+	{
+		delete m_space;
+		m_space = NULL;
+	}
+	if(m_car!=NULL)
+	{
+		delete m_car;
+		m_car = NULL;
+	}
+	m_space = new SpaceSideParking();
+	((SpaceSideParking*)m_space)->setParams( 703.000000,171.000000   //x,y
+						 );
+	m_car = new Car;
+	m_car->setParams(
+			1051.000000,254.000000,//x,y
+
+			 4415, //长度(mm) 4415  
+
+			  1674,  //宽度(mm) 1674  
+
+              1415, //高度(mm) 1415  
+
+			   2471, //轴距(mm) 2471  
+
+				1429, //前轮距(mm) 1429 
+
+				1422,  //后轮距(mm) 1422  
+
+				381, //轮胎直径(mm) 381  R15 inch 
+
+				200 //轮胎厚度
+				);
+	m_car->Rotate(-90);
+	m_car->Scale( 0.06 );     //ratio
+
+	((SpaceSideParking*)m_space)->setCar(m_car);
+	m_space->Scale(m_car->m_dRatio);
+	
+	Invalidate();
+
+	for(int i=0;i<4;++i)
+    m_car->m_show_guide_line[i] = check_guide_line[i];
+}
+
 
 void CChildView::OnAppExit()
 {
@@ -402,3 +445,4 @@ CChildView::~CChildView()
 	delete m_space;
     Util::LOG(L"~CChildView");
 }
+

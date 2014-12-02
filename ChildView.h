@@ -53,5 +53,6 @@ public:
 	afx_msg void OnMenuItemOutsideFrontWheel();
 	afx_msg void OnMenuItemOutsideRearWheel();
 	afx_msg void OnItemReverseParking();
+	afx_msg void OnItemSideParking();
 };
 
