@@ -38,7 +38,7 @@ protected:
 	
 	Car* m_car;
 	IControl* m_space;
-	IControl* m_steering_wheel;
+	SteeringWheel* m_steering_wheel;
 public:
 	
 	BOOL OnEraseBkgnd(CDC* pDC);

@@ -21,9 +21,9 @@ CChildView::CChildView()
 	m_space = NULL;
 	m_car = new Car();
 	m_steering_wheel = new SteeringWheel;
-	((SteeringWheel*)m_steering_wheel)->setParams(1180.000000,530.000000);
+	((SteeringWheel*)m_steering_wheel)->setParams(1080.000000,530.000000,100);
 	m_car->setParams(
-			 163.000000 ,  //x
+			 563.000000 ,  //x
 
 			 360.000000,   //y
 
@@ -89,7 +89,15 @@ BOOL CChildView::PreCreateWindow(CREATESTRUCT& cs)
 	 
 	return TRUE;
 }
-
+typedef enum
+{
+	TYPE_GO_FORWARD,
+	TYPE_GO_BACKWARD,
+	TYPE_TURN_LEFT,
+	TYPE_TURN_RIGHT,
+	TYPE_NORMAL
+}TYPE_OPER;
+TYPE_OPER m_oper = TYPE_OPER::TYPE_NORMAL;
 void CChildView::OnPaint() 
 {
 	//CPaintDC dc(this); // 用于绘制的设备上下文
@@ -110,7 +118,12 @@ void CChildView::OnPaint()
 	
 	// 不要为绘制消息而调用 CWnd::OnPaint()
 	if(m_space!=NULL) m_space->draw(MemDC);
-	if(m_steering_wheel!=NULL) m_steering_wheel->draw(MemDC);
+
+	if(m_steering_wheel!=NULL)
+	{
+			m_steering_wheel->draw(MemDC);
+	}
+
 	m_car->draw(MemDC);
 
 	 pDC->BitBlt(rect.left,rect.top,rect.Width(),rect.Height(),&MemDC,0,0,SRCCOPY);
@@ -165,6 +178,7 @@ if (pMsg->message==WM_KEYDOWN)
 		{
 			//Util::LOG(L"left");
 			m_car->go_forward();
+			m_oper = TYPE_OPER::TYPE_GO_FORWARD;
 			Invalidate(FALSE);
 		}
 		break;
@@ -173,7 +187,7 @@ if (pMsg->message==WM_KEYDOWN)
 			//Util::LOG(L"left");
 			m_car->go_backward();
 			//m_car->Scale(0.999);
-			 
+			m_oper = TYPE_OPER::TYPE_GO_BACKWARD;
 			Invalidate(FALSE);
 		}
 		break;
@@ -181,9 +195,13 @@ if (pMsg->message==WM_KEYDOWN)
 		{
 			//Util::LOG(L"left");
 			m_car->turn_left();
-			m_steering_wheel->Rotate(m_car->getMidWheelDegree() * 15);
+			double degree = m_car->getMidWheelDegree() * 14;
+			m_steering_wheel->m_degree_wheel_left = m_car->getLeftWheelDegree();
+			m_steering_wheel->m_degree_wheel_right = m_car->getRightWheelDegree();
+			m_steering_wheel->Rotate(-m_steering_wheel->m_degree);
+			m_steering_wheel->Rotate(degree);
 			//m_car->Scale(0.999);
-			 
+			m_oper = TYPE_OPER::TYPE_TURN_LEFT;
 			Invalidate(FALSE);
 		}
 		break;
@@ -191,9 +209,13 @@ if (pMsg->message==WM_KEYDOWN)
 		{
 			//Util::LOG(L"right");
 			m_car->turn_right();
-			m_steering_wheel->Rotate(m_car->getMidWheelDegree() * 15);
+			double degree = m_car->getMidWheelDegree() * 14;
+			m_steering_wheel->m_degree_wheel_left = m_car->getLeftWheelDegree();
+			m_steering_wheel->m_degree_wheel_right = m_car->getRightWheelDegree();
+			m_steering_wheel->Rotate(-m_steering_wheel->m_degree);
+			m_steering_wheel->Rotate(degree);
 			//m_car->Scale(1.001);
-		 
+			m_oper = TYPE_OPER::TYPE_TURN_RIGHT;
 			Invalidate(FALSE);
 		}
 		break;
