@@ -44,6 +44,7 @@ public:
 	void OnMenuItemOutsideFrontCar(CCmdUI *pCmdUI);
 	void OnMenuItemOutsideFrontWheel(CCmdUI *pCmdUI);
 	void OnMenuItemOutsideRearWheel(CCmdUI *pCmdUI);
+	void OnMenuItemInsideFrontWheel(CCmdUI *pCmdUI);
 	afx_msg void OnItemRightTurn();
 	afx_msg void OnItemFree();
 	afx_msg void OnAppExit();
@@ -54,5 +55,6 @@ public:
 	afx_msg void OnMenuItemOutsideRearWheel();
 	afx_msg void OnItemReverseParking();
 	afx_msg void OnItemSideParking();
+	afx_msg void OnMenuItemInsideFrontWheel();
 };
 

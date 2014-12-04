@@ -6,7 +6,7 @@
 #define ERROR 0.0000001
 Car::Car()
 {
-	for(int i=0;i<4;++i) m_show_guide_line[i] = FALSE;
+	for(int i=0;i<5;++i) m_show_guide_line[i] = FALSE;
 	m_degree = 0;
 	m_dRatio = 1;
 	m_wheel_front_left = new Wheel();
@@ -493,6 +493,13 @@ void Car::draw(CDC &dc)
 		dc.Ellipse(m_rotate_center.x - radius_rear_wheel,m_rotate_center.y - radius_rear_wheel,
 				m_rotate_center.x + radius_rear_wheel,m_rotate_center.y + radius_rear_wheel);
 		}
+		if(TRUE ==m_show_guide_line[4])
+		{
+		//»­ÄÚÇ°ÂÖÈ¦
+	    double radius_front_wheel = MathUtil::GetDistance(*(pt3d_front_wheel+1),m_rotate_center);
+		dc.Ellipse(m_rotate_center.x - radius_front_wheel,m_rotate_center.y - radius_front_wheel,
+				m_rotate_center.x + radius_front_wheel,m_rotate_center.y + radius_front_wheel);
+		}
 		if(TRUE == m_show_guide_line[0])
 		{
 		//»­°ë¾¶
@@ -522,6 +529,13 @@ void Car::draw(CDC &dc)
 	    double radius_rear_wheel = MathUtil::GetDistance(*(pt3d_rear_wheel+1),m_rotate_center);
 		dc.Ellipse(m_rotate_center.x - radius_rear_wheel,m_rotate_center.y - radius_rear_wheel,
 				m_rotate_center.x + radius_rear_wheel,m_rotate_center.y + radius_rear_wheel);
+		}
+		if(TRUE ==m_show_guide_line[4])
+		{
+		//»­ÄÚÇ°ÂÖÈ¦
+	    double radius_front_wheel = MathUtil::GetDistance(*(pt3d_front_wheel+0),m_rotate_center);
+		dc.Ellipse(m_rotate_center.x - radius_front_wheel,m_rotate_center.y - radius_front_wheel,
+				m_rotate_center.x + radius_front_wheel,m_rotate_center.y + radius_front_wheel);
 		}
 		if(TRUE == m_show_guide_line[0])
 		{

@@ -55,6 +55,7 @@ BEGIN_MESSAGE_MAP(CChildView, CWnd)
 	ON_UPDATE_COMMAND_UI(ID_MENU_ITEM_OUTSIDE_FRONT_CAR, &CChildView::OnMenuItemOutsideFrontCar)
 	ON_UPDATE_COMMAND_UI(ID_MENU_ITEM_OUTSIDE_FRONT_WHEEL, &CChildView::OnMenuItemOutsideFrontWheel)
 	ON_UPDATE_COMMAND_UI(ID_MENU_ITEM_OUTSIDE_REAR_WHEEL, &CChildView::OnMenuItemOutsideRearWheel)
+	ON_UPDATE_COMMAND_UI(ID_MENU_ITEM_INSIDE_FRONT_WHEEL, &CChildView::OnMenuItemInsideFrontWheel)
 	
 	ON_COMMAND(ID_ITEM_RIGHT_TURN, &CChildView::OnItemRightTurn)
 	ON_COMMAND(ID_ITEM_FREE, &CChildView::OnItemFree)
@@ -65,6 +66,7 @@ BEGIN_MESSAGE_MAP(CChildView, CWnd)
 	ON_COMMAND(ID_MENU_ITEM_OUTSIDE_REAR_WHEEL, &CChildView::OnMenuItemOutsideRearWheel)
 	ON_COMMAND(ID_ITEM_REVERSE_PARKING, &CChildView::OnItemReverseParking)
 	ON_COMMAND(ID_ITEM_SIDE_PARKING, &CChildView::OnItemSideParking)
+	ON_COMMAND(ID_MENU_ITEM_INSIDE_FRONT_WHEEL, &CChildView::OnMenuItemInsideFrontWheel)
 END_MESSAGE_MAP()
 
 
@@ -208,7 +210,7 @@ typedef enum{
 	TYPE_GUIDE_LINE_OUTSIDE_REAR_WHEEL,
 	TYPE_TURN_RIGHT
 }MENU_ITEM_TYPE;*/
-BOOL check_guide_line[4]={FALSE};
+BOOL check_guide_line[5]={FALSE};
 //MENU_ITEM_TYPE m_type;
 
 void CChildView::OnMenuItemRadius(CCmdUI *pCmdUI)
@@ -227,6 +229,10 @@ void CChildView::OnMenuItemOutsideFrontWheel(CCmdUI *pCmdUI)
 void CChildView::OnMenuItemOutsideRearWheel(CCmdUI *pCmdUI)
 {
 	pCmdUI->SetRadio(check_guide_line[3]);	  
+}
+void CChildView::OnMenuItemInsideFrontWheel(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetRadio(check_guide_line[4]);	  
 }
 void CChildView::OnMenuItemRadius()
 {
@@ -255,6 +261,7 @@ void CChildView::OnMenuItemOutsideFrontWheel()
 }
 
 
+
 void CChildView::OnMenuItemOutsideRearWheel()
 {
 	// TODO: 在此添加命令处理程序代码
@@ -262,6 +269,15 @@ void CChildView::OnMenuItemOutsideRearWheel()
 	m_car->m_show_guide_line[3]=check_guide_line[3];
 	Invalidate();
 }
+
+void CChildView::OnMenuItemInsideFrontWheel()
+{
+	// TODO: 在此添加命令处理程序代码
+	check_guide_line[4] = !check_guide_line[4];
+	m_car->m_show_guide_line[4]=check_guide_line[4];
+	Invalidate();
+}
+
 //自由模式
 void CChildView::OnItemFree()
 {
@@ -445,4 +461,6 @@ CChildView::~CChildView()
 	delete m_space;
     Util::LOG(L"~CChildView");
 }
+
+
 
