@@ -7,6 +7,7 @@
 
 #include "Wheel.h"
 #include "Car.h"
+#include "SteeringWheel.h"
 // CChildView ´°¿Ú
 
 class CChildView : public CWnd
@@ -37,6 +38,7 @@ protected:
 	
 	Car* m_car;
 	IControl* m_space;
+	IControl* m_steering_wheel;
 public:
 	
 	BOOL OnEraseBkgnd(CDC* pDC);

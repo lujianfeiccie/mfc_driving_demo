@@ -20,6 +20,8 @@ CChildView::CChildView()
 {
 	m_space = NULL;
 	m_car = new Car();
+	m_steering_wheel = new SteeringWheel;
+	((SteeringWheel*)m_steering_wheel)->setParams(1180.000000,530.000000);
 	m_car->setParams(
 			 163.000000 ,  //x
 
@@ -43,6 +45,7 @@ CChildView::CChildView()
 				);
 	m_car->Scale( 0.100614 );     //ratio
 	m_car->Rotate(0);
+	
 	//163.000000 , 360.000000,0.150614
 	//m_car = new Car(124.000000 , 295.000000 , 1);
 	//原先900,2500
@@ -107,7 +110,7 @@ void CChildView::OnPaint()
 	
 	// 不要为绘制消息而调用 CWnd::OnPaint()
 	if(m_space!=NULL) m_space->draw(MemDC);
-
+	if(m_steering_wheel!=NULL) m_steering_wheel->draw(MemDC);
 	m_car->draw(MemDC);
 
 	 pDC->BitBlt(rect.left,rect.top,rect.Width(),rect.Height(),&MemDC,0,0,SRCCOPY);
@@ -130,6 +133,7 @@ if (pMsg->message==WM_KEYDOWN)
 		{
 			//m_car->Translate(0,-1,0);
 		   //if(m_space!=NULL)	m_space->Translate(0,-1,0);
+			//if(m_steering_wheel!=NULL) m_steering_wheel->Translate(0,-5,0);
 			Invalidate(FALSE);
 		}
 		break;
@@ -137,6 +141,7 @@ if (pMsg->message==WM_KEYDOWN)
 		{
 			//m_car->Translate(0,1,0);
 		 	//if(m_space!=NULL) m_space->Translate(0,1,0);
+			//if(m_steering_wheel!=NULL) m_steering_wheel->Translate(0,5,0);
 			Invalidate(FALSE);
 		}
 		break;
@@ -144,6 +149,7 @@ if (pMsg->message==WM_KEYDOWN)
 		{
 			//m_car->Translate(-1,0,0);
 		 	//if(m_space!=NULL) m_space->Translate(-1,0,0);
+			//if(m_steering_wheel!=NULL) m_steering_wheel->Translate(-5,0,0);
 			Invalidate(FALSE);
 		}
 		break;
@@ -151,6 +157,7 @@ if (pMsg->message==WM_KEYDOWN)
 		{
 			//m_car->Translate(1,0,0);
 			//if(m_space!=NULL) m_space->Translate(1,0,0);
+			//if(m_steering_wheel!=NULL) m_steering_wheel->Translate(5,0,0);
 			Invalidate(FALSE);
 		}
 		break;
@@ -174,6 +181,7 @@ if (pMsg->message==WM_KEYDOWN)
 		{
 			//Util::LOG(L"left");
 			m_car->turn_left();
+			m_steering_wheel->Rotate(m_car->getMidWheelDegree() * 15);
 			//m_car->Scale(0.999);
 			 
 			Invalidate(FALSE);
@@ -183,6 +191,7 @@ if (pMsg->message==WM_KEYDOWN)
 		{
 			//Util::LOG(L"right");
 			m_car->turn_right();
+			m_steering_wheel->Rotate(m_car->getMidWheelDegree() * 15);
 			//m_car->Scale(1.001);
 		 
 			Invalidate(FALSE);
@@ -250,7 +259,6 @@ void CChildView::OnMenuItemOutsideFrontCar()
 	m_car->m_show_guide_line[1]=check_guide_line[1];
 	Invalidate();
 }
-
 
 void CChildView::OnMenuItemOutsideFrontWheel()
 {
@@ -459,6 +467,8 @@ CChildView::~CChildView()
 	delete m_car;
 	if(m_space!=NULL)
 	delete m_space;
+	if(m_steering_wheel!=NULL)
+	delete m_steering_wheel;
     Util::LOG(L"~CChildView");
 }
 

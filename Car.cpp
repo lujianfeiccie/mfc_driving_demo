@@ -14,6 +14,8 @@ Car::Car()
 	m_wheel_rear_left = new Wheel();
 	m_wheel_rear_right = new Wheel();
 
+	m_wheel_front_mid = new Wheel();
+
 	pt3d_front = new ThreeDPoint[4]; //前车盖
 	pt_front = new CPoint[4];
 
@@ -96,7 +98,14 @@ void Car::setParams(
 	(pt3d_mid+5)->x = m_dX; (pt3d_mid+5)->y = m_dY + m_fWheelbase / 2.0;
 
 	//前轮胎
-	m_wheel_front_left->setParams( m_dX -m_fFront_tread / 2.0 ,m_dY - m_fWheelbase / 2.0, m_dX, m_dY, m_fWheel_diameter,m_fWheel_width);
+	m_wheel_front_left->setParams( m_dX -m_fFront_tread / 2.0 ,
+								  m_dY - m_fWheelbase / 2.0, 
+								  m_dX, m_dY, m_fWheel_diameter,m_fWheel_width);
+
+	m_wheel_front_mid->setParams( m_dX, 
+		                           m_dY - m_fWheelbase / 2.0, 
+		                            m_dX, m_dY, m_fWheel_diameter,m_fWheel_width);
+
 	m_wheel_front_right->setParams( m_dX +m_fFront_tread / 2.0 ,m_dY - m_fWheelbase / 2.0, m_dX, m_dY, m_fWheel_diameter,m_fWheel_width);
 	
 	//后轮胎
@@ -164,6 +173,8 @@ void Car::turn_left()
 	m_wheel_front_left->turn_left();
 	m_wheel_front_right->turn_left();
 
+	m_wheel_front_mid->turn_left();
+
 	degree_offset = m_wheel_front_left ->m_degree - m_degree;//旋转后再次运算右前轮和车身的夹角
 
 	double a = 0;
@@ -212,6 +223,8 @@ void Car::turn_right()
 
 	m_wheel_front_left->turn_right();
 	m_wheel_front_right->turn_right();
+
+	m_wheel_front_mid->turn_right();
 
 	degree_offset = m_wheel_front_right ->m_degree - m_degree;//旋转后再次运算右前轮和车身的夹角
 
@@ -290,6 +303,10 @@ void Car::Scale(double ratio,double x,double y,double z)
 
 	m_wheel_rear_left->ScaleCar(ratio);
 	m_wheel_rear_right->ScaleCar(ratio);
+
+	//中间轮
+	m_wheel_front_mid->ScaleCar(ratio);
+
 	m_dRatio = ratio;
 	Util::LOG(L"m_dRatio=%lf",m_dRatio);
 }
@@ -333,7 +350,7 @@ void Car::Rotate(double degree,double x,double y,double z)
 	m_wheel_front_right->Rotate(degree,x,y,z);
 	m_wheel_rear_left->Rotate(degree,x,y,z);
 	m_wheel_rear_right->Rotate(degree,x,y,z);
-
+	m_wheel_front_mid->Rotate(degree,x,y,z);
 	m_degree +=degree;
 }
 void Car::go_forward()
@@ -448,7 +465,7 @@ void Car::draw(CDC &dc)
 	m_wheel_front_right->draw(dc);
 	m_wheel_rear_left->draw(dc);
 	m_wheel_rear_right->draw(dc);
-
+	m_wheel_front_mid->draw(dc);
 	if(!m_show_guide_line) return;
 
 	
@@ -554,12 +571,25 @@ void Car::draw(CDC &dc)
 	dc.SelectObject(pOldBrush);
 }
 
-
+double Car::getLeftWheelDegree() const
+{
+	return  m_wheel_front_left->m_degree - this->m_degree;
+}
+double Car::getRightWheelDegree() const
+{
+	return  m_wheel_front_right->m_degree - this->m_degree;
+}
+double Car::getMidWheelDegree() const
+{
+	return  m_wheel_front_mid->m_degree - this->m_degree;
+}
 
 Car::~Car(void)
 {
 	delete m_wheel_front_left;//左前轮
 	delete m_wheel_front_right;//右前轮
+
+	delete m_wheel_front_mid; //中前轮
 
 	delete m_wheel_rear_left;//左后轮
 	delete m_wheel_rear_right; //右后轮

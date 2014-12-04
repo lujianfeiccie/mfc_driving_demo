@@ -62,6 +62,7 @@ public:
 	CPoint* pt_rear;
 
 	Wheel* m_wheel_front_left; //前轮
+	Wheel* m_wheel_front_mid; //中轮(用于方向盘参考角度)
 	Wheel* m_wheel_front_right;
 
 	Wheel* m_wheel_rear_left;//后轮
@@ -80,5 +81,10 @@ public:
 	void go_backward();
 	void draw(CDC &dc);
 	BOOL m_show_guide_line[5];
+
+	
+	double getLeftWheelDegree() const;//左前轮角度
+	double getRightWheelDegree() const;//右前轮角度
+	double getMidWheelDegree() const;//中前轮角度
 };
 

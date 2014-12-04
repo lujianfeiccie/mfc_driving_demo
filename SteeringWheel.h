@@ -1,0 +1,23 @@
+#pragma once
+#include "icontrol.h"
+#include "MathUtil.h"
+class SteeringWheel :
+	public IControl
+{
+
+private:
+	ThreeDPoint* m_pt3d;
+public:
+	SteeringWheel(void);
+	~SteeringWheel(void);
+  void DrawBmp(CDC *pDC, CString filepath, double angle);
+  void setParams(double x,double y);
+  void Translate(double x,double y,double z);
+  void Scale(double ratio);
+  void Scale(double ratio,double x,double y,double z);
+  void Rotate(double degree);
+  void Rotate(double degree,double x,double y,double z);
+  void draw(CDC &dc);	
+   
+};
+
