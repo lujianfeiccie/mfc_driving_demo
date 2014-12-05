@@ -184,11 +184,21 @@ void Car::turn_left()
 	//计算旋转中心
 	if(degree_offset>0)//轮胎相对车身偏右
 	{
-		//计算中前轮位置
-		double x_offset = (pt3d_rear_wheel+0)->x + abs((pt3d_rear_wheel+1)->x - (pt3d_rear_wheel+0)->x)/2;
-		double y_offset = (pt3d_rear_wheel+0)->y - abs((pt3d_rear_wheel+1)->y - (pt3d_rear_wheel+0)->y)/2;
-		m_rotate_center.x = x_offset + abs(cos(m_degree * PI / 180)) * m_radius;
-		m_rotate_center.y = y_offset - abs(sin(m_degree * PI / 180)) * m_radius;
+			//计算中前轮位置
+		double x_offset;
+		double y_offset;
+		if(m_degree >= 0)
+		{
+			x_offset = (pt3d_rear_wheel+0)->x + abs((pt3d_rear_wheel+1)->x - (pt3d_rear_wheel+0)->x)/2;
+			y_offset = (pt3d_rear_wheel+0)->y + abs((pt3d_rear_wheel+1)->y - (pt3d_rear_wheel+0)->y)/2;
+		}
+		else
+		{
+			x_offset = (pt3d_rear_wheel+0)->x + abs((pt3d_rear_wheel+1)->x - (pt3d_rear_wheel+0)->x)/2;
+			y_offset = (pt3d_rear_wheel+0)->y - abs((pt3d_rear_wheel+1)->y - (pt3d_rear_wheel+0)->y)/2;
+		}
+		m_rotate_center.x = x_offset + cos(m_degree * PI / 180) * m_radius;
+		m_rotate_center.y = y_offset + sin(m_degree * PI / 180) * m_radius;
 
 		//计算右前轮转角
 		double hypotenuse = MathUtil::GetDistance(*(pt3d_front_wheel+1),m_rotate_center);
@@ -206,9 +216,18 @@ void Car::turn_left()
 	else if(degree_offset<0)//轮胎相对车身偏左
 	{
 		//计算中前轮位置
-		double x_offset = (pt3d_rear_wheel+0)->x + abs((pt3d_rear_wheel+1)->x - (pt3d_rear_wheel+0)->x)/2;
-		double y_offset = (pt3d_rear_wheel+0)->y - abs((pt3d_rear_wheel+1)->y - (pt3d_rear_wheel+0)->y)/2;
-
+		double x_offset;
+		double y_offset;
+		if(m_degree >= 0)
+		{
+			x_offset = (pt3d_rear_wheel+0)->x + abs((pt3d_rear_wheel+1)->x - (pt3d_rear_wheel+0)->x)/2;
+			y_offset = (pt3d_rear_wheel+0)->y + abs((pt3d_rear_wheel+1)->y - (pt3d_rear_wheel+0)->y)/2;
+		}
+		else
+		{
+			x_offset = (pt3d_rear_wheel+0)->x + abs((pt3d_rear_wheel+1)->x - (pt3d_rear_wheel+0)->x)/2;
+			y_offset = (pt3d_rear_wheel+0)->y - abs((pt3d_rear_wheel+1)->y - (pt3d_rear_wheel+0)->y)/2;
+		}
 	    m_rotate_center.x = x_offset - abs(cos(m_degree * PI / 180)) * m_radius;
     	m_rotate_center.y = y_offset + abs(sin(m_degree * PI / 180)) * m_radius;
 
@@ -243,11 +262,21 @@ void Car::turn_right()
 	//计算旋转中心
 	if(degree_offset>0)//轮胎相对车身偏右
 	{
-		//计算中前轮位置
-		double x_offset = (pt3d_rear_wheel+0)->x + abs((pt3d_rear_wheel+1)->x - (pt3d_rear_wheel+0)->x)/2;
-		double y_offset = (pt3d_rear_wheel+0)->y - abs((pt3d_rear_wheel+1)->y - (pt3d_rear_wheel+0)->y)/2;
-		m_rotate_center.x = x_offset + abs(cos(m_degree * PI / 180)) * m_radius;
-		m_rotate_center.y = y_offset - abs(sin(m_degree * PI / 180)) * m_radius;
+			//计算中前轮位置
+		double x_offset;
+		double y_offset;
+		if(m_degree >= 0)
+		{
+			x_offset = (pt3d_rear_wheel+0)->x + abs((pt3d_rear_wheel+1)->x - (pt3d_rear_wheel+0)->x)/2;
+			y_offset = (pt3d_rear_wheel+0)->y + abs((pt3d_rear_wheel+1)->y - (pt3d_rear_wheel+0)->y)/2;
+		}
+		else
+		{
+			x_offset = (pt3d_rear_wheel+0)->x + abs((pt3d_rear_wheel+1)->x - (pt3d_rear_wheel+0)->x)/2;
+			y_offset = (pt3d_rear_wheel+0)->y - abs((pt3d_rear_wheel+1)->y - (pt3d_rear_wheel+0)->y)/2;
+		}
+		m_rotate_center.x = x_offset + cos(m_degree * PI / 180) * m_radius;
+		m_rotate_center.y = y_offset + sin(m_degree * PI / 180) * m_radius;
 
 		//计算右前轮转角
 		double hypotenuse = MathUtil::GetDistance(*(pt3d_front_wheel+1),m_rotate_center);
@@ -264,12 +293,22 @@ void Car::turn_right()
 	}
 	else if(degree_offset<0)//轮胎相对车身偏左
 	{
-		//计算中前轮位置
-		double x_offset = (pt3d_rear_wheel+0)->x + abs((pt3d_rear_wheel+1)->x - (pt3d_rear_wheel+0)->x)/2;
-		double y_offset = (pt3d_rear_wheel+0)->y - abs((pt3d_rear_wheel+1)->y - (pt3d_rear_wheel+0)->y)/2;
-
+			//计算中前轮位置
+		double x_offset;
+		double y_offset;
+		if(m_degree >= 0)
+		{
+			x_offset = (pt3d_rear_wheel+0)->x + abs((pt3d_rear_wheel+1)->x - (pt3d_rear_wheel+0)->x)/2;
+			y_offset = (pt3d_rear_wheel+0)->y + abs((pt3d_rear_wheel+1)->y - (pt3d_rear_wheel+0)->y)/2;
+		}
+		else
+		{
+			x_offset = (pt3d_rear_wheel+0)->x + abs((pt3d_rear_wheel+1)->x - (pt3d_rear_wheel+0)->x)/2;
+			y_offset = (pt3d_rear_wheel+0)->y - abs((pt3d_rear_wheel+1)->y - (pt3d_rear_wheel+0)->y)/2;
+		}
 	    m_rotate_center.x = x_offset - abs(cos(m_degree * PI / 180)) * m_radius;
     	m_rotate_center.y = y_offset + abs(sin(m_degree * PI / 180)) * m_radius;
+
 		Util::LOG(L"m_radius=%lf",m_radius);
 		//计算右前轮转角
 		double hypotenuse = MathUtil::GetDistance(*(pt3d_front_wheel+1),m_rotate_center);
