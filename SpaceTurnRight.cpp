@@ -5,6 +5,7 @@
 
 SpaceTurnRight::SpaceTurnRight(void)
 {
+	Util::LOG(L"SpaceTurnRight");
 	m_bFirstDraw = TRUE;
 	m_pt3d = new ThreeDPoint[SIZE_OF_VERTEX];
 	m_pt = new CPoint[SIZE_OF_VERTEX];
@@ -119,8 +120,8 @@ void SpaceTurnRight::setCar(const Car *car)
 }
 SpaceTurnRight::~SpaceTurnRight(void)
 {
+	Util::LOG(L"~SpaceTurnRight");
 	delete []m_pt3d;
 	delete []m_pt;
-	delete m_tips;
 }
  

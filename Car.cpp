@@ -9,6 +9,7 @@ Car::Car()
 	for(int i=0;i<5;++i) m_show_guide_line[i] = FALSE;
 	m_degree = 0;
 	m_dRatio = 1;
+	m_speed = 1;
 	m_wheel_front_left = new Wheel();
 	m_wheel_front_right = new Wheel();
 	m_wheel_rear_left = new Wheel();
@@ -75,9 +76,9 @@ void Car::setParams(
 	
 	(pt3d_front+0)->x = m_dX - m_fWidth / 2.0;(pt3d_front+0)->y =m_dY - m_fWheelbase / 2.0 - m_fWheel_diameter / 2.0 - m_fWheel_diameter / 5.0;
 
-	(pt3d_front+1)->x = m_dX - m_fWidth / 2.0;(pt3d_front+1)->y =m_dY - m_fLength / 2.0;
+	(pt3d_front+1)->x = (pt3d_front+0)->x + m_fWidth/50; (pt3d_front+1)->y =m_dY - m_fLength / 2.0;
 	
-	(pt3d_front+2)->x = m_dX + m_fWidth / 2.0;(pt3d_front+2)->y =m_dY - m_fLength / 2.0;
+	(pt3d_front+2)->x = m_dX + m_fWidth / 2.0 - m_fWidth/50 ;(pt3d_front+2)->y =(pt3d_front+1)->y;
 
 	(pt3d_front+3)->x = m_dX + m_fWidth / 2.0;(pt3d_front+3)->y =m_dY - m_fWheelbase / 2.0 - m_fWheel_diameter / 2.0 - m_fWheel_diameter / 5.0;
 	
@@ -132,9 +133,9 @@ void Car::setParams(
 	
 	(pt3d_rear+0)->x = m_dX - m_fWidth / 2.0;(pt3d_rear+0)->y =m_dY + m_fWheelbase / 2.0 + m_fWheel_diameter / 2.0 + m_fWheel_diameter / 5.0;
 
-	(pt3d_rear+1)->x = m_dX - m_fWidth / 2.0;(pt3d_rear+1)->y =m_dY + m_fLength / 2.0 ;
+	(pt3d_rear+1)->x = m_dX - m_fWidth / 2.0+m_fWidth/50;(pt3d_rear+1)->y =m_dY + m_fLength / 2.0 ;
 	
-	(pt3d_rear+2)->x = m_dX + m_fWidth / 2.0;(pt3d_rear+2)->y =m_dY + m_fLength / 2.0 ;
+	(pt3d_rear+2)->x = m_dX + m_fWidth / 2.0-m_fWidth/50;(pt3d_rear+2)->y =m_dY + m_fLength / 2.0 ;
 
 	(pt3d_rear+3)->x = m_dX + m_fWidth / 2.0;(pt3d_rear+3)->y =m_dY + m_fWheelbase / 2.0 + m_fWheel_diameter / 2.0 + m_fWheel_diameter / 5.0;
 
@@ -441,8 +442,8 @@ void Car::go_forward()
 
 	if( degree_offset > -ERROR &&  degree_offset < ERROR )
 	{
-		Translate(sin(m_degree * PI / 180.0),
-			      -cos(m_degree * PI / 180.0),
+		Translate(m_speed * sin(m_degree * PI / 180.0),
+			      m_speed * -cos(m_degree * PI / 180.0),
 				  0);
 	 
 	}
@@ -451,34 +452,34 @@ void Car::go_forward()
 		double length_of_arc= PI * m_radius / 180.0;
 
 		if(degree_offset > 0)
-			Rotate(1/length_of_arc,m_rotate_center.x,m_rotate_center.y,0);
+			Rotate( m_speed /length_of_arc,m_rotate_center.x,m_rotate_center.y,0);
 		else
-			Rotate(-1/length_of_arc,m_rotate_center.x,m_rotate_center.y,0);
+			Rotate(-m_speed /length_of_arc,m_rotate_center.x,m_rotate_center.y,0);
 	}
-}
+} 
 void Car::go_backward()
 {
 	double degree_offset = m_wheel_front_mid->m_degree - m_degree;
 	if( degree_offset > -ERROR &&  degree_offset < ERROR )
 	{
-		Util::LOG(L"degree_offset==0 sin(m_degree * PI / 180.0)=%lf cos(m_degree * PI / 180.0)=%lf m_degree=%lf",
-			sin(m_degree * PI / 180.0),cos(m_degree * PI / 180.0),m_degree);
-		Translate(-sin(m_degree * PI / 180.0),
-			      cos(m_degree * PI / 180.0),
+		//Util::LOG(L"degree_offset==0 sin(m_degree * PI / 180.0)=%lf cos(m_degree * PI / 180.0)=%lf m_degree=%lf",
+		//	sin(m_degree * PI / 180.0),cos(m_degree * PI / 180.0),m_degree);
+		Translate(-m_speed * sin(m_degree * PI / 180.0),
+			      m_speed * cos(m_degree * PI / 180.0),
 				  0);
 
 	}
 	else
 	{
-		Util::LOG(L"degree_offset==0 sin(m_degree * PI / 180.0)=%lf cos(m_degree * PI / 180.0)=%lf m_degree=%lf",
-			sin(m_degree * PI / 180.0),cos(m_degree * PI / 180.0),m_degree);
+		//Util::LOG(L"degree_offset==0 sin(m_degree * PI / 180.0)=%lf cos(m_degree * PI / 180.0)=%lf m_degree=%lf",
+		//	sin(m_degree * PI / 180.0),cos(m_degree * PI / 180.0),m_degree);
 
 		double length_of_arc= PI * m_radius / 180.0;
 
 		if(degree_offset > 0)
-			Rotate(-1/length_of_arc,m_rotate_center.x,m_rotate_center.y,0);
+			Rotate(-m_speed /length_of_arc,m_rotate_center.x,m_rotate_center.y,0);
 		else
-			Rotate(1/length_of_arc,m_rotate_center.x,m_rotate_center.y,0);
+			Rotate(m_speed /length_of_arc,m_rotate_center.x,m_rotate_center.y,0);
 	}
 }
 void Car::draw(CDC &dc)
@@ -666,7 +667,18 @@ double Car::getMidWheelDegree() const
 {
 	return  m_wheel_front_mid->m_degree - this->m_degree;
 }
-
+void Car::speedUp()
+{
+	++m_speed;
+}
+void Car::speedDown()
+{
+	if(m_speed>1) --m_speed;
+}
+int Car::getSpeed() const
+{
+return m_speed;
+}
 Car::~Car(void)
 {
 	delete m_wheel_front_left;//×óÇ°ÂÖ

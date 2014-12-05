@@ -4,13 +4,13 @@
 #include "MathUtil.h"
 #include "Util.h"
 #include "ControlTips.h"
+#include "IControlSpace.h"
 class SpaceReverseParking :
-	public IControl
+	public IControlSpace
 {
 private:
 	ThreeDPoint *m_pt3d;
-	CPoint *m_pt;
-	ControlTips *m_tips;
+	CPoint *m_pt;	
 public:
 	SpaceReverseParking(void);
 	~SpaceReverseParking(void);

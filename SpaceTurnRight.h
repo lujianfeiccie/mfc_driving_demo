@@ -3,11 +3,12 @@
 #include "Car.h"
 #include "MathUtil.h"
 #include "ControlTips.h"
-class SpaceTurnRight : public IControl
+#include "IControlSpace.h"
+class SpaceTurnRight : public IControlSpace
 {
 public:
    SpaceTurnRight(void);
-   ~SpaceTurnRight(void);
+   virtual ~SpaceTurnRight(void);
   void setParams(double x,double y);	
   void setCar(const Car *car);
   void Translate(double x,double y,double z);
@@ -17,7 +18,6 @@ public:
   void Rotate(double degree,double x,double y,double z);
   void draw(CDC &dc);	
 private:
-	ControlTips* m_tips;
 	ThreeDPoint* m_pt3d;
 	CPoint* m_pt;
 	BOOL m_bFirstDraw;

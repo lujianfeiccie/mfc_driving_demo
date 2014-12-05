@@ -72,6 +72,9 @@
     <ClInclude Include="SteeringWheel.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="IControlSpace.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DrivingDemo.cpp">
@@ -114,6 +117,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SteeringWheel.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IControlSpace.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

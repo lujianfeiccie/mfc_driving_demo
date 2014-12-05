@@ -8,6 +8,7 @@
 #include "Wheel.h"
 #include "Car.h"
 #include "SteeringWheel.h"
+#include "IControlSpace.h"
 // CChildView ´°¿Ú
 
 class CChildView : public CWnd
@@ -37,7 +38,7 @@ protected:
 
 	
 	Car* m_car;
-	IControl* m_space;
+	IControlSpace* m_space;
 	SteeringWheel* m_steering_wheel;
 public:
 	
@@ -59,5 +60,7 @@ public:
 	afx_msg void OnItemReverseParking();
 	afx_msg void OnItemSideParking();
 	afx_msg void OnMenuItemInsideFrontWheel();	
+
+	void OnDestroy();
 };
 

@@ -3,7 +3,7 @@ class IControl
 {
 public:
 	IControl(void);
-	~IControl(void);
+	virtual ~IControl(void);
 
  double m_dRatio;
 

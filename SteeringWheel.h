@@ -11,7 +11,7 @@ private:
 	double m_radius;
 public:
 	SteeringWheel(void);
-	~SteeringWheel(void);
+	virtual ~SteeringWheel(void);
  
   void setParams(double x,double y,double radius);
   void Translate(double x,double y,double z);
@@ -23,5 +23,6 @@ public:
   
   double m_degree_wheel_left;
   double m_degree_wheel_right;
+  double m_degree_steering_wheel;  
 };
 

@@ -54,6 +54,7 @@ CChildView::CChildView()
 
 BEGIN_MESSAGE_MAP(CChildView, CWnd)
 	ON_WM_PAINT()
+	ON_WM_DESTROY()
 	ON_UPDATE_COMMAND_UI(ID_MENU_ITEM_RADIUS, &CChildView::OnMenuItemRadius)
 	ON_UPDATE_COMMAND_UI(ID_MENU_ITEM_OUTSIDE_FRONT_CAR, &CChildView::OnMenuItemOutsideFrontCar)
 	ON_UPDATE_COMMAND_UI(ID_MENU_ITEM_OUTSIDE_FRONT_WHEEL, &CChildView::OnMenuItemOutsideFrontWheel)
@@ -176,6 +177,20 @@ if (pMsg->message==WM_KEYDOWN)
 			Invalidate(FALSE);
 		}
 		break;
+		case VK_HOME:
+		{
+			m_car->speedUp();
+			if(m_space!=NULL)
+			m_space->m_tips->m_speed = m_car->getSpeed();
+		}
+		break;
+		case VK_END:
+		{
+			m_car->speedDown();
+			if(m_space!=NULL)
+			m_space->m_tips->m_speed = m_car->getSpeed();
+		}
+		break;
 		case VK_UP: 
 		{
 			//Util::LOG(L"left");
@@ -200,8 +215,10 @@ if (pMsg->message==WM_KEYDOWN)
 			double degree = m_car->getMidWheelDegree() * 14;
 			m_steering_wheel->m_degree_wheel_left = m_car->getLeftWheelDegree();
 			m_steering_wheel->m_degree_wheel_right = m_car->getRightWheelDegree();
+			m_steering_wheel->m_degree_steering_wheel = degree;
 			m_steering_wheel->Rotate(-m_steering_wheel->m_degree);
 			m_steering_wheel->Rotate(degree);
+			
 			//m_car->Scale(0.999);
 			m_oper = TYPE_OPER::TYPE_TURN_LEFT;
 			Invalidate(FALSE);
@@ -214,6 +231,7 @@ if (pMsg->message==WM_KEYDOWN)
 			double degree = m_car->getMidWheelDegree() * 14;
 			m_steering_wheel->m_degree_wheel_left = m_car->getLeftWheelDegree();
 			m_steering_wheel->m_degree_wheel_right = m_car->getRightWheelDegree();
+			m_steering_wheel->m_degree_steering_wheel = degree;
 			m_steering_wheel->Rotate(-m_steering_wheel->m_degree);
 			m_steering_wheel->Rotate(degree);
 			//m_car->Scale(1.001);
@@ -371,6 +389,7 @@ void CChildView::OnItemRightTurn()
 	m_steering_wheel->Rotate(-m_steering_wheel->m_degree);
 	m_steering_wheel->m_degree_wheel_left = 0;
 	m_steering_wheel->m_degree_wheel_right = 0;
+	m_steering_wheel->m_degree_steering_wheel = 0;
 	Invalidate();
 
 	for(int i=0;i<4;++i)
@@ -428,7 +447,7 @@ void CChildView::OnItemReverseParking()
 	m_steering_wheel->Rotate(-m_steering_wheel->m_degree);
 	m_steering_wheel->m_degree_wheel_left = 0;
 	m_steering_wheel->m_degree_wheel_right = 0;
-
+	m_steering_wheel->m_degree_steering_wheel = 0;
 	Invalidate();
 
 	for(int i=0;i<4;++i)
@@ -482,7 +501,7 @@ void CChildView::OnItemSideParking()
 	m_steering_wheel->Rotate(-m_steering_wheel->m_degree);
 	m_steering_wheel->m_degree_wheel_left = 0;
 	m_steering_wheel->m_degree_wheel_right = 0;
-
+	m_steering_wheel->m_degree_steering_wheel = 0;
 	Invalidate();
 
 	for(int i=0;i<4;++i)
@@ -509,13 +528,19 @@ void CChildView::OnAppAbout(CCmdUI *pCmdUI)
 CChildView::~CChildView()
 {
 	//DestroyWindow(); 
+	CWnd::DestroyWindow();
+    Util::LOG(L"~CChildView");
+}
+
+void CChildView::OnDestroy() 
+ { 
+	Util::LOG(L"OnDestroy");
 	if(m_car!=NULL)
 	delete m_car;
 	if(m_space!=NULL)
 	delete m_space;
 	if(m_steering_wheel!=NULL)
 	delete m_steering_wheel;
-    Util::LOG(L"~CChildView");
-}
-
+	CWnd::OnDestroy();
+ }
 

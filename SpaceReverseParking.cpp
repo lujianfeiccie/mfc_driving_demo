@@ -157,5 +157,4 @@ SpaceReverseParking::~SpaceReverseParking(void)
 {
 	delete []m_pt3d;
 	delete []m_pt;
-	delete m_tips;
 }

@@ -14,7 +14,6 @@ SpaceSideParking::~SpaceSideParking(void)
 {
 	delete []m_pt3d;
 	delete []m_pt;
-	delete m_tips;
 }
 void SpaceSideParking:: setParams(double x,double y)
 {

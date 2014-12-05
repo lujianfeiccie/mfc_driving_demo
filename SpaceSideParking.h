@@ -3,13 +3,13 @@
 #include "ControlTips.h"
 #include "MathUtil.h"
 #include "Car.h"
+#include "IControlSpace.h"
 class SpaceSideParking :
-	public IControl
+	public IControlSpace
 {
 private:
 	ThreeDPoint *m_pt3d;
 	CPoint *m_pt;
-	ControlTips *m_tips;
 public:
 	SpaceSideParking(void);
 	~SpaceSideParking(void);
@@ -21,5 +21,7 @@ public:
   void Rotate(double degree);
   void Rotate(double degree,double x,double y,double z);
   void draw(CDC &dc);
+
+  void setSpeed(int speed);
 };
 

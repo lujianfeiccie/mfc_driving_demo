@@ -10,11 +10,13 @@ SteeringWheel::SteeringWheel(void)
 	m_degree = 0;
 	m_degree_wheel_left = 0;
 	m_degree_wheel_right = 0;
+	m_degree_steering_wheel = 0;
 }
 
 
 SteeringWheel::~SteeringWheel(void)
 {
+	Util::LOG(L"~SteeringWheel");
 	delete []m_pt3d;
 	delete []m_pt;
 }
@@ -119,6 +121,16 @@ void SteeringWheel:: draw(CDC &dc)
 	tmp.Format(L"左前轮:%.1lf度 右前轮:%.1lf度",
 		m_degree_wheel_left,m_degree_wheel_right);
  
-	dc.TextOutW(this->m_dX-90,this->m_dY + m_radius+20,tmp);
+	CFont font, *pOldFont= NULL;//定义字体对象及其指针 ，你可以根据需求选择你要的字体类型和大小
+    font.CreatePointFont(120, L"楷体", &dc);
+	pOldFont = dc.SelectObject(&font);
+
+	dc.TextOutW(this->m_dX-90,this->m_dY + m_radius+30,tmp);
+
+	tmp.Format(L"方向盘:%.1lf度≈%.1lf圈",m_degree_steering_wheel,m_degree_steering_wheel/360.0);
+	dc.TextOutW(this->m_dX-90,this->m_dY - m_radius-20,tmp);
+
+	dc.SelectObject(pOldFont);
+	font.DeleteObject();
 	//DrawBmp(&dc,L"F:\\work\\DrivingDemo\\DrivingDemo\\steering_wheel.bmp",this->m_degree);
 }	
