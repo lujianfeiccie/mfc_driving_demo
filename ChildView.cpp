@@ -364,6 +364,11 @@ void CChildView::OnItemRightTurn()
 
 	((SpaceTurnRight*)m_space)->setCar(m_car);
 	m_space->Scale(m_car->m_dRatio);
+
+	//reset the degree steering wheel
+	m_steering_wheel->Rotate(-m_steering_wheel->m_degree);
+	m_steering_wheel->m_degree_wheel_left = 0;
+	m_steering_wheel->m_degree_wheel_right = 0;
 	Invalidate();
 
 	for(int i=0;i<4;++i)
@@ -417,6 +422,11 @@ void CChildView::OnItemReverseParking()
 	((SpaceReverseParking*)m_space)->setCar(m_car);
 	m_space->Scale(m_car->m_dRatio);
 	
+	//reset the degree steering wheel
+	m_steering_wheel->Rotate(-m_steering_wheel->m_degree);
+	m_steering_wheel->m_degree_wheel_left = 0;
+	m_steering_wheel->m_degree_wheel_right = 0;
+
 	Invalidate();
 
 	for(int i=0;i<4;++i)
@@ -466,7 +476,11 @@ void CChildView::OnItemSideParking()
 
 	((SpaceSideParking*)m_space)->setCar(m_car);
 	m_space->Scale(m_car->m_dRatio);
-	
+	//reset the degree steering wheel
+	m_steering_wheel->Rotate(-m_steering_wheel->m_degree);
+	m_steering_wheel->m_degree_wheel_left = 0;
+	m_steering_wheel->m_degree_wheel_right = 0;
+
 	Invalidate();
 
 	for(int i=0;i<4;++i)
