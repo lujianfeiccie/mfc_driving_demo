@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "Wheel.h"
 #include "Util.h"
-#define SIZE_OF_POINT 5
+#define SIZE_OF_POINT 7
 Wheel::Wheel()
 {
 	pt = new CPoint[SIZE_OF_POINT];
@@ -19,18 +19,58 @@ void Wheel::setParams(int x,int y,double car_cx,double car_cy,double m_fWheel_di
 	this->m_fWheel_width = m_fWheel_width;
 	for(int i=0;i<SIZE_OF_POINT;i++) (pt3d+i)->z = 0;
 
-	(pt3d+4)->x = x;(pt3d+4)->y = y;//中心点
+	
 
 	(pt3d+0)->x = x-m_fWheel_width /2.0; (pt3d+0)->y = y-m_fWheel_diameter/2.0;//左上角
 	(pt3d+1)->x = x+m_fWheel_width /2.0; (pt3d+1)->y = y-m_fWheel_diameter/2.0;//右上角
 	(pt3d+2)->x = x+m_fWheel_width /2.0; (pt3d+2)->y = y+m_fWheel_diameter/2.0;//右下角
 	(pt3d+3)->x = x-m_fWheel_width /2.0; (pt3d+3)->y = y+m_fWheel_diameter/2.0;//左下角
 
+
+
+	(pt3d+SIZE_OF_POINT-1)->x = x;
+	(pt3d+SIZE_OF_POINT-1)->y = y;//中心点
+
+	m_bShowRotationStick = FALSE;
+
 	this->m_car_cx = car_cx;
 	this->m_car_cy = car_cy;	
 }
 
+void Wheel::setRotationStick(double degree)
+{
+	double height = MathUtil::GetDistance(*(pt3d+0) , *(pt3d+3));
 
+	double x,y;
+	
+	//height -= m_fWheel_width;
+
+	if(degree >0 && degree < 180) //斜靠右
+	{
+		(pt3d+4)->x = this->m_dX + m_fWheel_width/2; 
+		x = this->m_dX + cos(degree * PI / 180) * height;
+	}
+	else if(degree >-180 && degree < 0) //斜靠左
+	{
+		(pt3d+4)->x = this->m_dX - m_fWheel_width/2; 
+		x = this->m_dX - cos(degree * PI / 180) * height;
+	}
+	y = this->m_dY + abs(sin(degree * PI / 180)) * height/1.5;
+
+	(pt3d+4)->y = this->m_dY; 
+
+	(pt3d+5)->x = x; 
+	(pt3d+5)->y = y;
+
+	m_bShowRotationStick = TRUE;
+}
+CPoint Wheel::getStickOutsidePosition()
+{
+	CPoint pt;
+	pt.x = (pt3d+5)->x; 
+	pt.y = (pt3d+5)->y;
+	return pt;
+}
 void Wheel::go_foward()
 {
 //	Util::LOG(L"before (%lf,%lf)",pt3d->x,pt3d->y);
@@ -54,8 +94,8 @@ void Wheel::turn_right()
 void Wheel::Translate(double x,double y,double z)
 {
 	MathUtil::Translate(pt3d,SIZE_OF_POINT,x,y,z);
-	 m_dX=(pt3d+4)->x;
-	 m_dY=(pt3d+4)->y;
+	 m_dX=(pt3d+SIZE_OF_POINT-1)->x;
+	 m_dY=(pt3d+SIZE_OF_POINT-1)->y;
 }
 void Wheel::Scale(double ratio)
 {
@@ -66,13 +106,15 @@ void Wheel::Scale(double ratio,double x,double y,double z)
 	MathUtil::Translate(pt3d,SIZE_OF_POINT,-x,-y,z);
 	MathUtil::Scale(pt3d,SIZE_OF_POINT,ratio);
 	MathUtil::Translate(pt3d,SIZE_OF_POINT, x, y,z);
-	m_dRatio *= ratio;
+	 m_dX=(pt3d+SIZE_OF_POINT-1)->x;
+	 m_dY=(pt3d+SIZE_OF_POINT-1)->y;
+	m_dRatio = ratio;
 }
 void Wheel::ScaleCar(double ratio)
 {
 	Scale(ratio, m_car_cx, m_car_cy,0);
-	 m_dX=(pt3d+4)->x;
-	 m_dY=(pt3d+4)->y;
+	 m_dX=(pt3d+SIZE_OF_POINT-1)->x;
+	 m_dY=(pt3d+SIZE_OF_POINT-1)->y;
 }
 void Wheel::Rotate(double degree)
 {
@@ -84,9 +126,8 @@ void Wheel::Rotate(double degree,double x,double y,double z)
 	MathUtil::RotateZ(pt3d,SIZE_OF_POINT,degree);
 	MathUtil::Translate(pt3d,SIZE_OF_POINT,x,y,0);
 
-	 m_dX=(pt3d+4)->x;
-	 m_dY=(pt3d+4)->y;
-
+	m_dX=(pt3d+SIZE_OF_POINT-1)->x;
+	m_dY=(pt3d+SIZE_OF_POINT-1)->y;
 	m_degree += degree;
 
 }
@@ -104,10 +145,16 @@ void Wheel::Rotate(double degree,double x,double y,double z)
 	MyBrush.CreateSolidBrush(RGB(0,0,0));
 	OldBrush=dc.SelectObject(&MyBrush);
 	//绘制
-	dc.Polygon(pt,SIZE_OF_POINT-1);
+	dc.Polygon(pt,SIZE_OF_POINT-1-2);
 
 	dc.SelectObject(OldPen);
 	dc.SelectObject(OldBrush);
+
+	if(m_bShowRotationStick)
+	{
+		dc.MoveTo(*(pt+4));
+		dc.LineTo(*(pt+5));
+	}
  }
 
 Wheel::~Wheel(void)

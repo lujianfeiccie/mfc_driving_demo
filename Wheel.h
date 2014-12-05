@@ -13,8 +13,6 @@ public:
 
   void draw(CDC &dc);
 
- 
-
     void go_foward();
 
     void go_backward();
@@ -35,5 +33,10 @@ public:
 	double m_fWheel_width;
 	double m_car_cx;
 	double m_car_cy;
+
+	void setRotationStick(double degree);
+	CPoint getStickOutsidePosition();
+private:
+	BOOL m_bShowRotationStick;
 };
 

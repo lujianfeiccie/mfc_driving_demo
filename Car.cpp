@@ -16,6 +16,7 @@ Car::Car()
 
 	m_wheel_front_mid = new Wheel();
 
+
 	pt3d_front = new ThreeDPoint[4]; //前车盖
 	pt_front = new CPoint[4];
 
@@ -108,15 +109,23 @@ void Car::setParams(
 
 	m_wheel_front_right->setParams( m_dX +m_fFront_tread / 2.0 ,m_dY - m_fWheelbase / 2.0, m_dX, m_dY, m_fWheel_diameter,m_fWheel_width);
 	
+	
+
 	//后轮胎
 	m_wheel_rear_left->setParams( m_dX -m_fRear_tread / 2.0 ,m_dY + m_fWheelbase / 2.0, m_dX, m_dY,m_fWheel_diameter,m_fWheel_width);
 	m_wheel_rear_right->setParams( m_dX +m_fRear_tread / 2.0 ,m_dY + m_fWheelbase / 2.0, m_dX, m_dY,m_fWheel_diameter,m_fWheel_width);
 	
-
+	
 	//后轴
 	for(int i=0;i<2;i++) (pt3d_rear_wheel + i)->z = 0;
 	(pt3d_rear_wheel+0)->x = m_dX - m_fWidth / 2.0;(pt3d_rear_wheel+0)->y = m_dY + m_fWheelbase / 2.0;
 	(pt3d_rear_wheel+1)->x = m_dX + m_fWidth / 2.0;(pt3d_rear_wheel+1)->y = m_dY + m_fWheelbase / 2.0;
+
+
+	//设置Ackermann转向几何指示
+	double degree_ackerman = 65;
+	m_wheel_front_left->setRotationStick(degree_ackerman);
+	m_wheel_front_right->setRotationStick(-degree_ackerman);
 
 	//后车盖
 	for(int i=0;i<4;i++) (pt3d_rear+i)->z = 0;
@@ -196,7 +205,7 @@ void Car::calc_mid_front_wheel_position(double *x,double *y)
 void Car::calc_center_position(double degree_of_mid_wheel_bettween_car,double degree_of_car,ThreeDPoint pt_mid_front_wheel,ThreeDPoint* rotate_center)
 {
 	//计算旋转中心
-	if(degree_of_mid_wheel_bettween_car>=0)//轮胎相对车身偏右
+	if(degree_of_mid_wheel_bettween_car>0)//轮胎相对车身偏右
 	{
 		if(degree_of_car >=0 && degree_of_car < 90) //1st Quadrant
 		{
@@ -429,7 +438,8 @@ void Car::Rotate(double degree,double x,double y,double z)
 void Car::go_forward()
 {
 	double degree_offset = m_wheel_front_mid->m_degree - m_degree;
-	if(0 == degree_offset)
+
+	if( degree_offset > -ERROR &&  degree_offset < ERROR )
 	{
 		Translate(sin(m_degree * PI / 180.0),
 			      -cos(m_degree * PI / 180.0),
@@ -449,10 +459,10 @@ void Car::go_forward()
 void Car::go_backward()
 {
 	double degree_offset = m_wheel_front_mid->m_degree - m_degree;
-	if( 0==degree_offset )
+	if( degree_offset > -ERROR &&  degree_offset < ERROR )
 	{
-	//	Util::LOG(L"sin(m_degree * PI / 180.0)=%lf cos(m_degree * PI / 180.0)=%lf m_degree=%lf",
-		//	sin(m_degree * PI / 180.0),cos(m_degree * PI / 180.0),m_degree);
+		Util::LOG(L"degree_offset==0 sin(m_degree * PI / 180.0)=%lf cos(m_degree * PI / 180.0)=%lf m_degree=%lf",
+			sin(m_degree * PI / 180.0),cos(m_degree * PI / 180.0),m_degree);
 		Translate(-sin(m_degree * PI / 180.0),
 			      cos(m_degree * PI / 180.0),
 				  0);
@@ -460,6 +470,9 @@ void Car::go_backward()
 	}
 	else
 	{
+		Util::LOG(L"degree_offset==0 sin(m_degree * PI / 180.0)=%lf cos(m_degree * PI / 180.0)=%lf m_degree=%lf",
+			sin(m_degree * PI / 180.0),cos(m_degree * PI / 180.0),m_degree);
+
 		double length_of_arc= PI * m_radius / 180.0;
 
 		if(degree_offset > 0)
@@ -530,6 +543,10 @@ void Car::draw(CDC &dc)
 	m_wheel_front_right->draw(dc);
 	m_wheel_rear_left->draw(dc);
 	m_wheel_rear_right->draw(dc);
+
+	dc.MoveTo(m_wheel_front_left->getStickOutsidePosition());
+	dc.LineTo(m_wheel_front_right->getStickOutsidePosition());
+
 	//m_wheel_front_mid->draw(dc);
 	if(!m_show_guide_line) return;
 
