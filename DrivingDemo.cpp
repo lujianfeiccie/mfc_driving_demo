@@ -7,7 +7,8 @@
 #include "afxdialogex.h"
 #include "DrivingDemo.h"
 #include "MainFrm.h"
-
+#include "Util.h"
+#include "afxwin.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -123,6 +124,7 @@ protected:
 
 public:
 	virtual BOOL OnInitDialog();
+	CStatic m_lbl_version;
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
@@ -132,6 +134,7 @@ CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_STATIC_VERSION, m_lbl_version);
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
@@ -152,7 +155,48 @@ BOOL CAboutDlg::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
+	TCHAR cPath[200],szVersionBuffer[200];
+ DWORD dwHandle,InfoSize;
+ CString strVersion;
+ ::GetModuleFileName(NULL,cPath,sizeof(cPath)); //首先获得版本信息资源的长度
+ InfoSize = GetFileVersionInfoSize(cPath,&dwHandle); //将版本信息资源读入缓冲区
+ if(InfoSize==0) 
+ {
+  AfxMessageBox(_T("None VerSion Supprot"));
+  return TRUE;
+ }
+ char *InfoBuf = new char[InfoSize];
+ GetFileVersionInfo(cPath,0,InfoSize,InfoBuf); //获得生成文件使用的代码页及文件版本
+ unsigned int  cbTranslate = 0;
+ struct LANGANDCODEPAGE {
+  WORD wLanguage;
+  WORD wCodePage;
+ } *lpTranslate;
+ VerQueryValue(InfoBuf, TEXT("\\VarFileInfo\\Translation"),(LPVOID*)&lpTranslate,&cbTranslate);
+ // Read the file description for each language and code page.
+ for( int i=0; i < (cbTranslate/sizeof(struct LANGANDCODEPAGE)); i++ )
+ {
+  TCHAR  SubBlock[200];
+  wsprintf( SubBlock,
+            TEXT("\\StringFileInfo\\%04x%04x\\FileVersion"),
+            lpTranslate[i].wLanguage,
+            lpTranslate[i].wCodePage);
+  void *lpBuffer=NULL;
+  unsigned int dwBytes=0;
+  VerQueryValue(InfoBuf,
+   SubBlock,
+   &lpBuffer,
+   &dwBytes);
+  CString strTemp=(TCHAR *)lpBuffer;
+  strVersion+=strTemp;
+ }
 
+delete InfoBuf;
+ //AfxMessageBox(strVersion);
+CString tmp;
+tmp.Format(L"作者:陆键霏 版本:%s",strVersion);
+//Util::LOG(L"version=%s",strVersion);
+m_lbl_version.SetWindowTextW(tmp);
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
 }
