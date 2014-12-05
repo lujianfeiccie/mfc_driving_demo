@@ -59,6 +59,7 @@ BEGIN_MESSAGE_MAP(CChildView, CWnd)
 	ON_UPDATE_COMMAND_UI(ID_MENU_ITEM_OUTSIDE_FRONT_WHEEL, &CChildView::OnMenuItemOutsideFrontWheel)
 	ON_UPDATE_COMMAND_UI(ID_MENU_ITEM_OUTSIDE_REAR_WHEEL, &CChildView::OnMenuItemOutsideRearWheel)
 	ON_UPDATE_COMMAND_UI(ID_MENU_ITEM_INSIDE_FRONT_WHEEL, &CChildView::OnMenuItemInsideFrontWheel)
+	ON_UPDATE_COMMAND_UI(ID_APP_ABOUT, &CChildView::OnAppAbout)
 	
 	ON_COMMAND(ID_ITEM_RIGHT_TURN, &CChildView::OnItemRightTurn)
 	ON_COMMAND(ID_ITEM_FREE, &CChildView::OnItemFree)
@@ -70,6 +71,7 @@ BEGIN_MESSAGE_MAP(CChildView, CWnd)
 	ON_COMMAND(ID_ITEM_REVERSE_PARKING, &CChildView::OnItemReverseParking)
 	ON_COMMAND(ID_ITEM_SIDE_PARKING, &CChildView::OnItemSideParking)
 	ON_COMMAND(ID_MENU_ITEM_INSIDE_FRONT_WHEEL, &CChildView::OnMenuItemInsideFrontWheel)
+	
 END_MESSAGE_MAP()
 
 
@@ -496,6 +498,14 @@ void CChildView::OnAppExit()
 //	DestroyWindow();
 	Util::LOG(L"OnAppExit");
 }
+
+
+void CChildView::OnAppAbout(CCmdUI *pCmdUI)
+{
+	CString tmp;
+	tmp.Format(L"¹ØÓÚ%s",GetProductName());
+	pCmdUI->SetText(tmp);
+}
 CChildView::~CChildView()
 {
 	//DestroyWindow(); 
@@ -507,6 +517,5 @@ CChildView::~CChildView()
 	delete m_steering_wheel;
     Util::LOG(L"~CChildView");
 }
-
 
 

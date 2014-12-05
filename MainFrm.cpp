@@ -43,7 +43,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		TRACE0("未能创建视图窗口\n");
 		return -1;
 	}
-		SetWindowText(L"驾考模拟");
+
+	SetWindowText(GetProductName());
 
 	return 0;
 }
