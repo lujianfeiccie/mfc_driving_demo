@@ -86,5 +86,11 @@ public:
 	double getLeftWheelDegree() const;//左前轮角度
 	double getRightWheelDegree() const;//右前轮角度
 	double getMidWheelDegree() const;//中前轮角度
+
+private:
+
+	void calc_mid_front_wheel_position(double *x,double *y);
+	void calc_center_position(double degree_of_mid_wheel_bettween_car,double degree_of_car,ThreeDPoint pt_mid_front_wheel,ThreeDPoint* rotate_center);
+	void calc_left_right_wheel(double degree_of_mid_wheel_between_car);
 };
 
