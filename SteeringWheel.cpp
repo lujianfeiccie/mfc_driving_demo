@@ -99,6 +99,10 @@ void SteeringWheel:: draw(CDC &dc)
 	dc.Ellipse(this->m_dX - radius,this->m_dY - radius,
 			   this->m_dX + radius,this->m_dY + radius);
 
+	radius*=0.3;
+	dc.Ellipse(this->m_dX - radius,this->m_dY - radius,
+			   this->m_dX + radius,this->m_dY + radius);
+
 	CPen MyPen,*OldPen;	
 	MyPen.CreatePen(PS_SOLID,1,RGB(0,0,0));
 	OldPen=dc.SelectObject(&MyPen);	
@@ -115,6 +119,6 @@ void SteeringWheel:: draw(CDC &dc)
 	tmp.Format(L"左前轮:%.1lf度 右前轮:%.1lf度",
 		m_degree_wheel_left,m_degree_wheel_right);
  
-	dc.TextOutW(this->m_dX-130,this->m_dY + m_radius+20,tmp);
+	dc.TextOutW(this->m_dX-90,this->m_dY + m_radius+20,tmp);
 	//DrawBmp(&dc,L"F:\\work\\DrivingDemo\\DrivingDemo\\steering_wheel.bmp",this->m_degree);
 }	
