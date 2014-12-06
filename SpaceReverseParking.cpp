@@ -57,7 +57,7 @@ SpaceReverseParking::SpaceReverseParking(void)
 	 (m_pt3d + 7)->y = (m_pt3d + 2)->y;
 
 	 //文字提示
-	 m_tips->setParams((m_pt3d + 3)->x+W/2,(m_pt3d + 3)->y+W/2);
+	 m_tips->setParams((m_pt3d + 7)->x+W/2,(m_pt3d + 3)->y+W/2);
 
 	 //中心点
 	 (m_pt3d + 8)->x = this->m_dX; 
@@ -74,7 +74,7 @@ void SpaceReverseParking:: Translate(double x,double y,double z)
 
 	 double width = abs((m_pt3d + 4)->x -  (m_pt3d + 5)->x)/2;
 	 //文字提示
-	m_tips->setParams((m_pt3d + 3)->x + width,(m_pt3d + 3)->y + width);
+	m_tips->setParams((m_pt3d + 7)->x - width,(m_pt3d + 3)->y + width);
 
 	Util::LOG(L" SpaceReverseParking:: Translate (%lf,%lf)",this->m_dX,this->m_dY);
 }
@@ -93,7 +93,7 @@ void SpaceReverseParking:: Scale(double ratio,double x,double y,double z)
 
 	 double width = abs((m_pt3d + 4)->x -  (m_pt3d + 5)->x)/2;
 	 //文字提示
-	m_tips->setParams((m_pt3d + 3)->x + width,(m_pt3d + 3)->y + width);
+	m_tips->setParams((m_pt3d + 7)->x - width,(m_pt3d + 3)->y + width);
 
 }
 void SpaceReverseParking::Rotate(double degree)
@@ -111,7 +111,7 @@ void SpaceReverseParking::Rotate(double degree,double x,double y,double z)
 
 	 double width = abs((m_pt3d + 4)->x -  (m_pt3d + 5)->x)/2;
 	 //文字提示
-	m_tips->setParams((m_pt3d + 3)->x +width,(m_pt3d + 3)->y+width);
+	m_tips->setParams((m_pt3d + 7)->x -width,(m_pt3d + 3)->y+width);
 
 }
 void SpaceReverseParking:: draw(CDC &dc)

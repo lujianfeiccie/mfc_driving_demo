@@ -43,7 +43,7 @@ void SpaceTurnRight::setCar(const Car *car)
 	(m_pt3d+5)->y = this->m_dY + width / 2;
 
 	m_tips->setParams((m_pt3d+3)->x+width/3, //内拐角x
-					  (m_pt3d+2)->y+width/3  //右下角y
+					  (m_pt3d+2)->y-width/3  //右下角y
 					  );
 }
 
@@ -56,7 +56,7 @@ void SpaceTurnRight::setCar(const Car *car)
 	 //调整提示位置
 	double width = abs((m_pt3d+0)->x -(m_pt3d+3)->x)/2;
 	m_tips->setParams((m_pt3d+3)->x+width, //内拐角x
-					  (m_pt3d+2)->y+width  //右下角y
+					  (m_pt3d+2)->y-width  //右下角y
 					  );
 	 Util::LOG(L"SpaceTurnRight translate(%lf,%lf)",this->m_dX,this->m_dY);
  }
@@ -73,7 +73,7 @@ void SpaceTurnRight::setCar(const Car *car)
 	//调整提示位置
 	double width = abs((m_pt3d+0)->x -(m_pt3d+3)->x)/2;
 	m_tips->setParams((m_pt3d+3)->x+width, //内拐角x
-					  (m_pt3d+2)->y+width  //右下角y
+					  (m_pt3d+2)->y+width / 7  //右下角y
 					  );
 	
  }
@@ -92,7 +92,7 @@ void SpaceTurnRight::setCar(const Car *car)
 	//调整提示位置
 	double width = abs((m_pt3d+0)->x -(m_pt3d+3)->x)/2;
 	m_tips->setParams((m_pt3d+3)->x+width, //内拐角x
-					  (m_pt3d+2)->y+width  //右下角y
+					  (m_pt3d+2)->y-width  //右下角y
 					  );
  }
  void SpaceTurnRight::draw(CDC &dc)

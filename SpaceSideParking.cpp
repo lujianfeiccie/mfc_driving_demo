@@ -72,7 +72,7 @@ void SpaceSideParking:: setCar(const Car *car)
 	 this->m_dY = (m_pt3d+8)->y;
 
 	 double offset = abs((m_pt3d+2)->y - (m_pt3d+4)->y);
-	m_tips->setParams(this->m_dX,this->m_dY + offset + offset/2);
+	m_tips->setParams(this->m_dX-offset,this->m_dY + offset + offset/2);
 	 Util::LOG(L"SpaceSideParking:: Translate(%lf,%lf)",
 		 this->m_dX,this->m_dY);
  }
@@ -89,7 +89,7 @@ void SpaceSideParking:: setCar(const Car *car)
 	 this->m_dY = (m_pt3d+8)->y;
 
 	 double offset = abs((m_pt3d+2)->y - (m_pt3d+4)->y);
-	m_tips->setParams(this->m_dX,this->m_dY + offset + offset/2);
+	m_tips->setParams(this->m_dX-offset,this->m_dY + offset + offset/2);
  }
  void SpaceSideParking:: Rotate(double degree)
  {
@@ -104,7 +104,7 @@ void SpaceSideParking:: setCar(const Car *car)
 	 this->m_dY = (m_pt3d+8)->y;
 
 	 double offset = abs((m_pt3d+2)->y - (m_pt3d+4)->y);
-	m_tips->setParams(this->m_dX,this->m_dY + offset + offset/2);
+	m_tips->setParams(this->m_dX-offset,this->m_dY + offset + offset/2);
  }
  void SpaceSideParking:: draw(CDC &dc)
  {
